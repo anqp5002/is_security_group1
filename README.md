@@ -1,73 +1,70 @@
-TV3 - Huấn luyện mô hình Logistic Regression, Naive Bayes và SVM
-Thành viên: Kim An - Ma so sinh vien : N23DCCN001
+# 🛡️ IDS Machine Learning Project - TV3
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Main_Member-Kim_An-blue?style=for-the-badge&logo=github" alt="Member">
+  <img src="https://img.shields.io/badge/Role-AI_Developer-green?style=for-the-badge" alt="Role">
+  <img src="https://img.shields.io/badge/Task-SVM_NB_LR-orange?style=for-the-badge" alt="Task">
+</p>
+
+---
+
+## 📖 Giới thiệu
+Phần này thuộc **Thành viên 3** trong dự án Phân tích xâm nhập mạng (IDS). Nhiệm vụ chính là nghiên cứu, huấn luyện và tối ưu hóa 3 thuật toán học máy truyền thống để phân loại các kiểu tấn công trên tập dữ liệu **CIC-IDS2017**.
+
+### 🛠️ Thuật toán triển khai
+1.  **Logistic Regression**: Tối ưu với kỹ thuật *Smoothed Class Weights* và *Clipping Outliers*.
+2.  **Categorical Naive Bayes**: Áp dụng kỹ thuật *Binning* (Rời rạc hóa dữ liệu) để xử lý dữ liệu mạng.
+3.  **Support Vector Machine (SVM)**: Sử dụng *Quantile Transformer* và *Nystroem Approximation* để tối ưu hiệu năng trên tập dữ liệu lớn.
+
+---
+
+## 📊 Kết quả thực nghiệm
+
+Dưới đây là bảng so sánh hiệu năng của 3 mô hình đã thực hiện:
+
+|         Mô hình         | Accuracy | Macro F1-Score |    Trạng thái     |
+| :---------------------- | :------: | :------------: | :---------------- |
+| **Logistic Regression** | 93%      | 0.71           | ✅ Hoàn thành     |
+| **Naive Bayes**         | 83%      | 0.60           | ✅ Hoàn thành     |
+| **SVM (Tối ưu)**        | 97%      | 0.64           | 🔥 Tốt nhất (TV3) |
+
+> [!TIP]
+> **SVM** cho độ chính xác cao nhất nhưng cần nhiều tài nguyên tính toán hơn. **Logistic Regression** là lựa chọn cân bằng nhất giữa tốc độ và hiệu quả.
+
+---
+
+## 📂 Cấu trúc thư mục (TV3)
+```text
+├── notebooks/
+│   ├── logistic_regression.ipynb   # Xử lý Skewed Data & LR
+│   ├── naive_bayes.ipynb           # Kỹ thuật Binning & NB
+│   └── svm.ipynb                   # Nystroem & SVM v5
+├── data/
+│   ├── artifacts/                  # Chứa Confusion Matrix (.png)
+│   └── models/                     # Chứa Model đã đóng gói (.pkl)
+└── requirements.txt                # Danh sách thư viện cần thiết
 
 
-Mô tả: Huấn luyện và tối ưu hóa 3 thuật toán phân loại: Logistic Regression (LR), Categorical Naive Bayes (CNB) và Support Vector Machine (SVM) trên tập dữ liệu CIC-IDS2017. Tập trung vào việc xử lý dữ liệu mất cân bằng và tối ưu hóa tốc độ huấn luyện cho các mô hình học máy truyền thống.
+🚀 Hướng dẫn sử dụng mô hình
+Để chạy lại các mô hình của Thành viên 3, vui lòng thực hiện các bước sau:
 
+1. Cài đặt thư viện
+Bash
+```bash 
+pip install -r requirements.txt
 
-Cấu trúc thư mục:
-logistic_regression.ipynb — Notebook huấn luyện LR với Smoothed Class Weights.
-naive_bayes.ipynb — Notebook huấn luyện Naive Bayes với kỹ thuật Binning.
-svm.ipynb — Notebook huấn luyện SVM tối ưu (Quantile + Nystroem)
-.data/artifacts/ — Chứa ma trận nhầm lẫn (CM) của 3 mô hình.
-data/models/ — Chứa các file model .pkl đã đóng gói.
-
-
-Kết quả huấn luyện
-So sánh tổng quan 3 mô hình
-
-Mô hình                 Accuracy      MacroAvgF1     Đặc điểm nổi bật
-Logistic Regression     93%             0.71       Tốc độ nhanh, ổn định nhờ Clipping Outliers.Categorical 
-Naive Bayes             83%             0.60       Hiệu quả sau khi dùng Binning, cực kỳ nhẹ.
-SVM (Tối ưu)            97%             0.64       Độ chính xác cao nhất, xử lý nhiễu cực tốt.
-
-Phân tích chi tiết
-1. Logistic Regression (Đã tối ưu)
-Kết quả: Đạt Accuracy 93%. Điểm ấn tượng là Recall của các lớp thiểu số rất cao (Bot: 92%, Web Attack: 91%) nhờ kỹ thuật làm mềm trọng số lớp (Smoothed Class Weights).
-
-Ưu điểm: Khả năng hội tụ nhanh và không bị ảnh hưởng quá nhiều bởi nhiễu sau khi đã thực hiện Clipping tại phân vị 99%.
-
-2. Categorical Naive Bayes (Binning)
-Kết quả: Accuracy 83%. Đây là mô hình có tốc độ dự đoán nhanh nhất.
-
-Ưu điểm: Việc áp dụng KBinsDiscretizer giúp mô hình hoạt động tốt trên dữ liệu mạng vốn không tuân theo phân phối chuẩn. Tuy nhiên, độ chính xác thấp hơn do giả định các đặc trưng độc lập.
-
-3. SVM (Quantile + Nystroem)
-Kết quả: Đạt Accuracy vượt trội 97%.
-
-Ưu điểm: Sử dụng QuantileTransformer giúp chuẩn hóa dữ liệu cực đoan và Nystroem để xấp xỉ RBF Kernel, cho phép đạt độ chính xác của SVM phi tuyến trên tập dữ liệu lớn mà không bị treo máy.
-
-Hạn chế: Độ chính xác của các lớp Web Attack vẫn còn thấp (F1-score từ 0.02 - 0.61) do đặc trưng của các cuộc tấn công này rất tinh vi và giống lưu lượng bình thường.
-
-
-
-
-
-Hướng dẫn triển khai (TV3)
-Yêu cầu môi trường
-Cài đặt các thư viện cần thiết theo file requirements.txt:
-
-```bash
-pip install -r requirements.txt  
 ```
-Sử dụng Model
-Mô hình được đóng gói dưới dạng Pipeline (bao gồm cả bộ tiền xử lý và mô hình):
+2. Load Model nhanh với Joblib
 
 ```python
 import joblib
 
-# Load mô hình SVM (Phiên bản tốt nhất của TV3)
+# Load mô hình SVM v5 (Best Model)
 model = joblib.load('data/models/svm_final_v5_model.pkl')
-label_encoder = joblib.load('data/models/svm_label_encoder_v5.pkl')
+le = joblib.load('data/models/svm_label_encoder_v5.pkl')
 
-
-# Dự đoán
-# sample: mảng 2D chứa 17 đặc trưng mạng
-prediction = model.predict(sample)
-result = label_encoder.inverse_transform(prediction)
-print(f"Cảnh báo: {result[0]}")
+# Dự đoán mẫu dữ liệu mới
+# X_sample có 17 đặc trưng đã định nghĩa
+prediction = model.predict(X_sample)
+print(f"Kết quả dự đoán: {le.inverse_transform(prediction)}")
 ```
-
-Đóng góp cho Team
-Cung cấp các mô hình baseline (LR, NB) để so sánh hiệu năng với KNN/Random Forest của TV4.
-Đóng gói toàn bộ quy trình tiền xử lý vào Pipeline giúp việc tích hợp vào hệ thống thời gian thực của nhóm trở nên dễ dàng và đồng bộ.
