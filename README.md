@@ -28,8 +28,6 @@ Dưới đây là bảng so sánh hiệu năng của 3 mô hình đã thực hi�
 | **Naive Bayes**         | 83%      | 0.60           | ✅ Hoàn thành     |
 | **SVM (Tối ưu)**        | 97%      | 0.64           | 🔥 Tốt nhất (TV3) |
 
-> [!TIP]
-> **SVM** cho độ chính xác cao nhất nhưng cần nhiều tài nguyên tính toán hơn. **Logistic Regression** là lựa chọn cân bằng nhất giữa tốc độ và hiệu quả.
 
 ---
 
@@ -43,9 +41,9 @@ Dưới đây là bảng so sánh hiệu năng của 3 mô hình đã thực hi�
 │   ├── artifacts/                  # Chứa Confusion Matrix (.png)
 │   └── models/                     # Chứa Model đã đóng gói (.pkl)
 └── requirements.txt                # Danh sách thư viện cần thiết
+```
 
-
-🚀 Hướng dẫn sử dụng mô hình
+Hướng dẫn sử dụng mô hình
 Để chạy lại các mô hình của Thành viên 3, vui lòng thực hiện các bước sau:
 
 1. Cài đặt thư viện
