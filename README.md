@@ -2,6 +2,8 @@
 
 A machine learning-based Network Intrusion Detection System that compares 5 ML models on the **CIC-IDS2017** dataset and deploys the best model (Random Forest) for real-time attack detection.
 
+**⭐ All training done on Kaggle** - Download results from Google Drive link below
+
 ---
 
 ## 📊 Quick Model Comparison
@@ -27,26 +29,53 @@ python phase6_demo.py
 ```
 Runs instant predictions on synthetic network flows with real-time Suricata-format alerts.
 
-### 2️⃣ Full Pipeline (2-4 hours, requires Kaggle dataset)
+### 2️⃣ Get Pre-trained Results (Recommended ⭐)
 ```bash
-# Download CIC-IDS2017 dataset (8 CSVs, ~2GB) from:
+# Download all training outputs from Google Drive:
+# https://drive.google.com/drive/folders/11JVbhnkZmTAB5ptHeTcQ9F00Y51MoEam
+
+# Extract artifacts to project:
+# - HoangAnh_N23DCCN071/data/processed/
+# - HoangAnh_N23DCCN071/data/final/
+# - HoangAnh_N23DCCN071/artifacts/
+# - HoangAnh_N23DCCN071/outputs/
+# - N23DCCN001_DangKimAn/data/artifacts/
+# - N23DCCN138_PhamQuocAn/artifacts/
+# - N23DCCN138_PhamQuocAn/logs/
+# - outputs/comparison/
+
+# Then use trained models:
+python phase6_demo.py
+python model_comparison.py  # View comparison charts
+```
+
+### 3️⃣ Train Yourself on Kaggle (2-4 hours)
+```bash
+# Download CIC-IDS2017 dataset from:
 # https://www.kaggle.com/datasets/chethuhn/network-intrusion-dataset/
-mkdir -p HoangAnh_N23DCCN071/data/raw
-# Extract 8 CSV files to HoangAnh_N23DCCN071/data/raw/
 
-# Run step-by-step (TV1 → TV2 → TV3 → TV4 → TV5)
+# TV1: Data Preprocessing
 cd HoangAnh_N23DCCN071
-python preprocess.py                          # TV1: EDA (10-15 min)
-python prepare_model_data.py                  # TV2: Features (5-10 min)
+# Create: mkdir -p data/raw
+# Extract 8 CSV files to data/raw/
+python preprocess.py          # 10-15 min
 
+# TV2: Feature Selection  
+python prepare_model_data.py  # 5-10 min
+
+# TV3: Train 3 Models (LR/NB/SVM) - ON KAGGLE
 cd ../N23DCCN001_DangKimAn
-jupyter notebook nodebook/*.ipynb             # TV3: Train 3 models (30-60 min)
+# Create Kaggle notebook, copy nodebook/*.ipynb code
+# Run on Kaggle (recommended for RAM)
 
+# TV4: Train Advanced Models (KNN/RF) - ON KAGGLE
 cd ../N23DCCN138_PhamQuocAn
-python notebooks/IDS_ML_Notebook.py           # TV4: Train RF/KNN (60-120 min)
+# Create Kaggle notebook, copy notebooks/IDS_ML_Notebook.py code
+# Run on Kaggle (recommended for RAM)
 
+# TV5: Compare Models (local)
 cd ../
-python model_comparison.py                    # TV5: Compare all 5 (1 min)
+python model_comparison.py    # 1 min
 ```
 
 ---
@@ -133,28 +162,28 @@ is_security_group1/
 
 **Annual Impact:** RF prevents 52,000+ port scans and 6.5M+ bot flows that KNN would miss.
 
+### Model Comparison Visualization
+
+![Model Accuracy Comparison](outputs/comparison/bar_accuracy.png)
+
 ---
 
-## 🔧 Configuration
+## 🔧 18 Core Features Used
 
-All 18 features and hyperparameters are centralized in `config.py`:
+The model uses these standardized network flow features:
 
-```python
-SELECTED_FEATURES = [
-    "Protocol", "Flow Duration", "Tot Fwd Pkts", "Tot Bwd Pkts",
-    "TotLen Fwd Pkts", "TotLen Bwd Pkts", "Fwd Pkt Len Mean", 
-    "Bwd Pkt Len Mean", "Flow Byts/s", "Flow Pkts/s", "Pkt Len Mean",
-    "Pkt Len Std", "SYN Flag Cnt", "ACK Flag Cnt", "FIN Flag Cnt",
-    "RST Flag Cnt", "PSH Flag Cnt", "URG Flag Cnt"
-]
-
-HYPERPARAMS = {
-    "train_test_split": {"test_size": 0.2, "stratify": True},
-    "smote": {"minority_threshold_pct": 0.10},
-    "random_forest": {"n_estimators": 100, "random_state": 42},
-    ...
-}
 ```
+Protocol, Flow Duration, Tot Fwd Pkts, Tot Bwd Pkts,
+TotLen Fwd Pkts, TotLen Bwd Pkts, Fwd Pkt Len Mean, Bwd Pkt Len Mean,
+Flow Byts/s, Flow Pkts/s, Pkt Len Mean, Pkt Len Std,
+SYN Flag Cnt, ACK Flag Cnt, FIN Flag Cnt, RST Flag Cnt, PSH Flag Cnt, URG Flag Cnt
+```
+
+**Hyperparameters:**
+- Train/Test Split: 80/20 (stratified)
+- SMOTE: Oversample minorities to 10%
+- RandomUnderSampler: Cap majority at 3× minority
+- Random Forest: 100 trees, random_state=42
 
 ---
 

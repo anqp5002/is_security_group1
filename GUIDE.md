@@ -18,43 +18,59 @@
 
 ## Quick Start
 
-### For Impatient People (Demo in 1 minute)
+### Option 1: Demo Only (1 minute)
 ```bash
-# Install dependencies
 pip install -r requirements.txt
-
-# Run instant demo (creates synthetic data if models don't exist)
 python phase6_demo.py
 ```
-
 **Output:** Real-time predictions on network flows with Suricata-format alerts
 
-### For Full Understanding (2-4 hours)
+### Option 2: Use Pre-trained Models (Recommended ⭐)
 ```bash
-# Download dataset from Kaggle (~2GB)
-mkdir -p HoangAnh_N23DCCN071/data/raw
-# Extract 8 CSV files to HoangAnh_N23DCCN071/data/raw/
+# Download all outputs from Google Drive:
+# https://drive.google.com/drive/folders/11JVbhnkZmTAB5ptHeTcQ9F00Y51MoEam
 
-# TV1: Data Preprocessing (10-15 min)
+# Extract to project directories:
+# - Place all files to respective folders (see structure below)
+
+# Then run:
+python phase6_demo.py                    # Use trained RF model
+python model_comparison.py               # View comparison charts
+```
+
+### Option 3: Train Everything on Kaggle (2-4 hours)
+
+**⭐ RECOMMENDED:** Use Kaggle notebooks instead of local (better RAM, faster)
+
+```bash
+# TV1: Data Preprocessing (Local)
 cd HoangAnh_N23DCCN071
-python preprocess.py
+mkdir -p data/raw
+# Download 8 CSVs from Kaggle and extract to data/raw/
+python preprocess.py          # 10-15 min
 
-# TV2: Feature Selection (5-10 min)
-python prepare_model_data.py
+# TV2: Feature Selection (Local)
+python prepare_model_data.py  # 5-10 min
 
-# TV3: Train 3 Models (30-60 min)
+# TV3: Train 3 Models (ON KAGGLE)
 cd ../N23DCCN001_DangKimAn
-jupyter notebook nodebook/logistic_regression.ipynb
-jupyter notebook nodebook/naive_bayes.ipynb
-jupyter notebook nodebook/svm.ipynb
+# 1. Create new Kaggle notebook
+# 2. Add dataset: chethuhn/network-intrusion-dataset
+# 3. Copy code from: nodebook/logistic_regression.ipynb
+# 4. Run on Kaggle (no memory issues)
+# Time: 30-60 min
 
-# TV4: Train Advanced Models (60-120 min) - Use Kaggle recommended
+# TV4: Train Advanced Models (ON KAGGLE)
 cd ../N23DCCN138_PhamQuocAn
-python notebooks/IDS_ML_Notebook.py
+# 1. Create new Kaggle notebook
+# 2. Add dataset: chethuhn/network-intrusion-dataset
+# 3. Copy code from: notebooks/IDS_ML_Notebook.py
+# 4. Run on Kaggle (recommended for RAM)
+# Time: 60-120 min
 
-# TV5: Compare All Models (1 min)
+# TV5: Compare All Models (Local)
 cd ../
-python model_comparison.py
+python model_comparison.py    # 1 min
 ```
 
 ---
@@ -89,15 +105,14 @@ Despite KNN having **0.61% higher accuracy**, Random Forest was chosen for **pro
 
 ### Root Level Files
 
-| File | Purpose | What It Contains |
-|------|---------|------------------|
-| **README.md** | Quick project overview | Links to this guide |
-| **GUIDE.md** | This file - Complete documentation | Everything you need to know |
-| **config.py** | Central configuration | 18 features, hyperparameters, paths |
-| **utils.py** | Shared utility functions | load_data(), plot_confusion_matrix(), format_alert_log() |
-| **requirements.txt** | Python dependencies | All packages needed |
-| **model_comparison.py** | Model aggregation script | Compares 5 models, generates charts |
-| **phase6_demo.py** | Real-time prediction demo | Demo predictions without training |
+| File | Purpose |
+|------|---------|
+| **README.md** | Quick project overview |
+| **GUIDE.md** | This file - Complete documentation |
+| **REPORT.md** | Detailed model analysis & deployment decision |
+| **requirements.txt** | Python dependencies |
+| **model_comparison.py** | Compares 5 models, generates charts |
+| **phase6_demo.py** | Real-time prediction demo |
 
 ### Team Member Folders
 
@@ -140,6 +155,14 @@ data/processed/merged_cleaned.csv  (2.8M rows × 79 columns)
 outputs/attack_distribution.png
 outputs/correlation_heatmap.png
 ```
+
+**EDA Visualizations:**
+
+#### Attack Distribution
+![Attack Distribution](HoangAnh_N23DCCN071/outputs/attack_distribution.png)
+
+#### Feature Correlation Heatmap
+![Correlation Heatmap](HoangAnh_N23DCCN071/outputs/correlation_heatmap.png)
 
 **Directory structure after this phase:**
 ```
@@ -210,6 +233,17 @@ N23DCCN001_DangKimAn/data/artifacts/
 └── svm_v5_confusion_matrix.png
 ```
 
+**Confusion Matrices:**
+
+#### Logistic Regression
+![Logistic Regression CM](N23DCCN001_DangKimAn/data/artifacts/logistic_regression.png)
+
+#### Naive Bayes
+![Naive Bayes CM](N23DCCN001_DangKimAn/data/artifacts/naive_algorithm.png)
+
+#### SVM (Nystroem)
+![SVM CM](N23DCCN001_DangKimAn/data/artifacts/svm_v5_confusion_matrix.png)
+
 ---
 
 ### Phase 4: Train Advanced Models (TV4)
@@ -234,6 +268,14 @@ artifacts/
 └── random_forest_model.pkl
 logs/alerts.log  ← Sample Suricata-format alerts
 ```
+
+**Confusion Matrices:**
+
+#### KNN (K=5) - 98.20% Accuracy
+![KNN CM](N23DCCN138_PhamQuocAn/outputs/cm_KNN.png)
+
+#### Random Forest - 97.59% Accuracy (DEPLOYED)
+![Random Forest CM](N23DCCN138_PhamQuocAn/outputs/cm_Random_Forest.png)
 
 ---
 
@@ -268,66 +310,23 @@ outputs/comparison/
 
 ---
 
-## Config & Utils
+## Project Files
 
-### ⚠️ Important: Understand the Architecture
-
-**Current State:**
-- ✅ config.py exists (18 features, hyperparameters, paths)
-- ✅ utils.py exists (load_data, plot_confusion_matrix, format_alert_log)
-- ❌ **Training scripts DON'T import them** (hardcoded values instead)
-
-**Why?**
-- Scripts written by different team members separately
-- Notebooks developed independently
-- Integration happened late in project
-
-**Where they ARE used:**
-- ✅ `phase6_demo.py` - Uses config.py and utils.py properly
-- ✅ Documentation & future maintenance
-
-### config.py Contents
-
-```python
-# 18 Core Features (must be identical across all models)
-SELECTED_FEATURES = [
-    "Protocol", "Flow Duration", "Tot Fwd Pkts", "Tot Bwd Pkts",
-    "TotLen Fwd Pkts", "TotLen Bwd Pkts", "Fwd Pkt Len Mean", 
-    "Bwd Pkt Len Mean", "Flow Byts/s", "Flow Pkts/s", "Pkt Len Mean",
-    "Pkt Len Std", "SYN Flag Cnt", "ACK Flag Cnt", "FIN Flag Cnt",
-    "RST Flag Cnt", "PSH Flag Cnt", "URG Flag Cnt"
-]
-
-# Hyperparameters for all models
-HYPERPARAMS = {
-    "train_test_split": {"test_size": 0.2, "stratify": True},
-    "smote": {"minority_threshold_pct": 0.10},
-    "random_under_sampler": {"majority_ratio": 3},
-    "random_forest": {"n_estimators": 100, "random_state": 42},
-    ...
-}
+### 18 Core Features (Used Across All Models)
+```
+Protocol, Flow Duration, Tot Fwd Pkts, Tot Bwd Pkts,
+TotLen Fwd Pkts, TotLen Bwd Pkts, Fwd Pkt Len Mean, Bwd Pkt Len Mean,
+Flow Byts/s, Flow Pkts/s, Pkt Len Mean, Pkt Len Std,
+SYN Flag Cnt, ACK Flag Cnt, FIN Flag Cnt, RST Flag Cnt, PSH Flag Cnt, URG Flag Cnt
 ```
 
-### utils.py Functions
+### Hyperparameters Used
 
-```python
-# Load & concat 8 CSV files
-df = load_data("data/raw")
-
-# Generate confusion matrix heatmap
-cm = plot_confusion_matrix(
-    y_true, y_pred, 
-    class_names=["BENIGN", "DDoS", ...],
-    save_path="outputs/cm.png"
-)
-
-# Format Suricata-style alert
-alert = format_alert_log(
-    label="DDoS",
-    dst_port=80,
-    dst_ip="10.0.0.1"
-)
-# Output: "[2026-05-02 14:35:22] [ALERT] DDoS. Destination Port: 80. Dst IP: 10.0.0.1."
+```
+Train/Test Split: 80/20 (stratified)
+SMOTE: Oversample minorities to 10% of majority
+RandomUnderSampler: Cap majority at 3× minority
+Random Forest: 100 trees
 ```
 
 ---
@@ -439,36 +438,61 @@ python phase6_demo.py
 
 ```
 is_security_group1/
-├── README.md                      ← Quick overview (points to GUIDE.md)
-├── GUIDE.md                       ← This file - Complete documentation
-├── REPORT.md                      ← Detailed model analysis & deployment decision
-├── config.py                      ← Central configuration (18 features, hyperparams)
-├── utils.py                       ← Shared utilities (load, plot, alerts)
-├── model_comparison.py            ← Aggregate & compare 5 models
+├── README.md                      ← Quick overview
+├── GUIDE.md                       ← Complete documentation (THIS FILE)
+├── REPORT.md                      ← Model analysis & deployment decision
+├── model_comparison.py            ← Compare 5 models, generate charts
 ├── phase6_demo.py                 ← Real-time prediction demo
 ├── requirements.txt               ← Python dependencies
 │
-├── HoangAnh_N23DCCN071/           (TV1 + TV2)
-│   ├── preprocess.py
-│   ├── prepare_model_data.py
-│   ├── outputs/ (EDA charts)
-│   └── artifacts/ (scaler, encoder)
+├── HoangAnh_N23DCCN071/           (TV1: Preprocessing + TV2: Features)
+│   ├── preprocess.py              → Loads 8 CSVs, generates EDA charts
+│   ├── prepare_model_data.py      → Feature selection, balancing, splitting
+│   ├── data/
+│   │   ├── raw/                   (Input: 8 CSV files from Kaggle)
+│   │   ├── processed/             (Output: cleaned data)
+│   │   └── final/                 (Output: train/test splits)
+│   ├── artifacts/                 (scaler.pkl, label_encoder.pkl)
+│   ├── outputs/                   (EDA charts)
+│   └── requirements.txt
 │
-├── N23DCCN001_DangKimAn/          (TV3)
+├── N23DCCN001_DangKimAn/          (TV3: LR, NB, SVM models)
 │   ├── nodebook/
 │   │   ├── logistic_regression.ipynb
 │   │   ├── naive_bayes.ipynb
 │   │   └── svm.ipynb
-│   ├── data/artifacts/ (confusion matrices)
+│   ├── data/artifacts/            (confusion matrices)
 │   └── README.md
 │
-└── N23DCCN138_PhamQuocAn/         (TV4)
+└── N23DCCN138_PhamQuocAn/         (TV4: KNN, RF models + alerts)
     ├── notebooks/
-    │   └── IDS_ML_Notebook.py
-    ├── logs/ (alerts.log)
-    ├── artifacts/ (models)
+    │   └── IDS_ML_Notebook.py     → KNN & RF training
+    ├── logs/                       (alerts.log)
+    ├── artifacts/                  (trained models)
     └── README.md
 ```
+
+---
+
+## Google Drive: Pre-trained Results
+
+**All training outputs available at:**
+```
+https://drive.google.com/drive/folders/11JVbhnkZmTAB5ptHeTcQ9F00Y51MoEam
+```
+
+**Contents:**
+- ✅ Cleaned data (TV1 output)
+- ✅ Balanced datasets (TV2 output)
+- ✅ Confusion matrices (TV3 output)
+- ✅ Trained models (TV4 output)
+- ✅ Real-time alerts (TV4 output)
+- ✅ Model comparison charts (TV5 output)
+
+**How to use:**
+1. Download from Google Drive link above
+2. Extract files to their respective folders
+3. Run `python phase6_demo.py` or `python model_comparison.py`
 
 ---
 

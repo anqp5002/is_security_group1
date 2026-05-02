@@ -182,16 +182,22 @@ Random Forest best leverages **non-linear feature interactions** that other mode
 
 After running `python model_comparison.py`, the following visualizations are generated in `outputs/comparison/`:
 
-### 1. bar_accuracy.png
+### 1. Model Accuracy Ranking
 Side-by-side model accuracy ranking with gold highlight on best model (KNN at 98.20%). Shows the ~1% trade-off between KNN and RF visually.
 
-### 2. bar_all_metrics.png
+![Accuracy Comparison](outputs/comparison/bar_accuracy.png)
+
+### 2. Accuracy vs F1-Score Metrics
 Grouped bar chart comparing Accuracy vs F1-Score for each model. Reveals the class-balance vs overall-accuracy trade-off more clearly.
 
-### 3. radar_chart.png
+![All Metrics Comparison](outputs/comparison/bar_all_metrics.png)
+
+### 3. Multi-Dimensional Performance Chart
 Multi-dimensional spider/radar chart showing Accuracy and F1-Score simultaneously. Useful for identifying which metrics each model excels at.
 
-### 4. comparison_table.csv
+![Radar Chart](outputs/comparison/radar_chart.png)
+
+### 4. Detailed Metrics Table
 Raw metrics data (Model, Accuracy, Precision, Recall, F1, Note) exported to CSV for further analysis or reporting.
 
 ---
