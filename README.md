@@ -171,127 +171,20 @@ print(labels)  # e.g., ['BENIGN', 'DDoS', 'PortScan', ...]
 
 ## 📋 Model Comparison Report
 
-### Executive Summary
-A comprehensive evaluation of 5 machine learning models on the **CIC-IDS2017** network intrusion detection dataset revealed significant performance variations. **Random Forest was selected for deployment** despite not achieving the highest overall accuracy, due to superior attack detection capability across critical attack classes.
+**See detailed report:** [`REPORT.md`](REPORT.md)
 
-### Overall Performance Analysis
+### Quick Summary
 
-| Metric | Best Model | Score | Comments |
-|--------|-----------|-------|----------|
-| **Overall Accuracy** | KNN (K=5) | 98.20% | Highest but weak on minority attacks |
-| **F1-Score (Weighted)** | KNN (K=5) | 98.20% | Better class-balance metric |
-| **Attack Detection** | **Random Forest** | **97.59%** | Best recall on dangerous attacks |
-| **PortScan Recall** | **Random Forest** | **99.9%** | Critical for reconnaissance detection |
-| **Bot Recall** | **Random Forest** | **92.3%** | Best malware/command detection |
+| Metric | Best | Score | Notes |
+|--------|------|-------|-------|
+| Overall Accuracy | KNN | 98.20% | But weak on minority attacks |
+| Attack Detection | **Random Forest** | **97.59%** | **DEPLOYED** |
+| PortScan Recall | **Random Forest** | **99.9%** | vs KNN 84.8% |
+| Bot Recall | **Random Forest** | **92.3%** | vs KNN 62.4% |
 
-### Detailed Model Rankings
+**Why Random Forest?** Despite 0.61% lower accuracy, RF detects 15% more reconnaissance and 30% more botnet infections—critical for production security.
 
-#### 1️⃣ KNN (K=5) — Highest Accuracy ⭐ 98.20%
-- **Precision/Recall/F1:** 98.20% (weighted average)
-- **Strengths:** Excellent overall accuracy, balanced across benign traffic
-- **Weaknesses:** 
-  - **Weak PortScan detection:** 84.8% recall (misses 15% of scans)
-  - **Poor Bot detection:** 62.4% recall (misses 37% of botnet traffic)
-  - Scalability issues with large datasets
-- **Verdict:** Good for general classification but inadequate for critical attack detection
-
-#### 2️⃣ Random Forest — Deployed Model ⭐⭐ 97.59%
-- **Precision/Recall/F1:** 97.59% (weighted average)
-- **Strengths:**
-  - **Exceptional PortScan recall:** 99.9% (catches 999 out of 1000 scans)
-  - **Excellent Bot detection:** 92.3% recall (catches 923 out of 1000 botnet flows)
-  - Robust to class imbalance
-  - Fast inference on new traffic
-  - Interpretable feature importance
-- **Weaknesses:** Slightly lower overall accuracy (−0.61% vs KNN) — acceptable trade-off
-- **Verdict:** Production-grade model. Superior attack detection justifies deployment
-
-#### 3️⃣ SVM (Nystroem) — High Accuracy 97.00%
-- **Precision/Recall/F1:** 0.64 (macro average, incomplete metrics)
-- **Strengths:** Good scalability with Nystroem approximation
-- **Weaknesses:** 
-  - Weak F1 score suggests class imbalance problems
-  - High computational cost
-  - Missing detailed metrics from TV3
-- **Verdict:** Not suitable despite reasonable accuracy
-
-#### 4️⃣ Logistic Regression — Baseline 93.00%
-- **Precision/Recall/F1:** 0.71 (macro average)
-- **Strengths:** Fast training, interpretable coefficients
-- **Weaknesses:**
-  - Poor accuracy (−4.59% below Random Forest)
-  - Cannot model complex attack patterns
-  - Class imbalance not handled well
-- **Verdict:** Adequate baseline but insufficient for production
-
-#### 5️⃣ Naive Bayes — Weakest 83.00%
-- **Precision/Recall/F1:** 0.60 (macro average)
-- **Strengths:** Fast inference, good for quick filtering
-- **Weaknesses:**
-  - Lowest accuracy (−14.59% below Random Forest)
-  - Feature independence assumption violated in network traffic
-  - Very poor minority class detection
-- **Verdict:** Not recommended for IDS deployment
-
-### Attack Detection Capability (Why Random Forest?)
-
-The key decision criterion was **recall on dangerous attack classes**:
-
-```
-┌────────────────────────────────────────────────────────┐
-│ ATTACK CLASS DETECTION (Recall)                        │
-├─────────────────┬──────────┬──────────┬────────────────┤
-│ Attack Type     │ KNN (K=5)│ RF (Best)│ Improvement    │
-├─────────────────┼──────────┼──────────┼────────────────┤
-│ PortScan        │   84.8%  │  99.9%   │ +15.1% ↑       │
-│ Bot             │   62.4%  │  92.3%   │ +29.9% ↑       │
-│ DDoS            │   98.1%  │  98.5%   │ +0.4%          │
-│ Web Attack      │   95.3%  │  96.2%   │ +0.9%          │
-│ Infiltration    │   89.7%  │  91.5%   │ +1.8%          │
-└─────────────────┴──────────┴──────────┴────────────────┘
-```
-
-**Critical Finding:**  
-- **PortScan** (network reconnaissance) is the first step of sophisticated attacks
-  - Detecting 99.9% vs 84.8% prevents 15% more attack chains from progressing
-- **Bot** (compromised host) indicates active malware presence
-  - Detecting 92.3% vs 62.4% catches 30% more botnet infections before damage
-
-**False Negative Cost Analysis:**
-In a network with 10,000 flows/hour over 24/7:
-- **With KNN:** 144 port scans slip through daily → attackers gain network knowledge
-- **With RF:** 1 port scan slips through daily → near-complete reconnaissance blocking
-- **With KNN:** 26,880 bot flows slip through daily → massive malware spread
-- **With RF:** 8,832 bot flows blocked additionally → better infection containment
-
-### Key Findings
-
-1. **Accuracy vs Recall Trade-off:** KNN achieves 0.61% higher overall accuracy but misses 30% more bot infections—an unacceptable trade-off for security-critical systems.
-
-2. **Class Imbalance Handling:** Random Forest + SMOTE + RandomUnderSampler successfully handles the 80:20 benign:attack distribution without sacrificing minority class detection.
-
-3. **Feature Engineering Impact:** The 18 selected features (from config.py) capture network flow characteristics effectively across all models, with Random Forest best leveraging non-linear feature interactions.
-
-4. **Model Complexity:** Random Forest's ensemble nature provides robustness. KNN's instance-based approach overfits to benign patterns at the expense of attack detection.
-
-### Deployment Recommendation
-
-✅ **Random Forest is operationally superior despite ~1% lower overall accuracy**
-
-- **Deployment readiness:** Production-grade (97.59% accuracy, 99.9% PortScan detection)
-- **Inference speed:** ~50-100ms per 1000 flows on standard hardware
-- **Feature importance:** Top 5 features consistently: SYN flags, ACK flags, flow duration, packet counts
-- **Scalability:** Handles real-time traffic with <5% CPU overhead on modest servers
-- **Maintenance:** 18 fixed features, no online learning required
-
-### Comparison Output Artifacts
-
-After running `model_comparison.py`, the following visualizations are generated in `outputs/comparison/`:
-
-1. **bar_accuracy.png** — Side-by-side model accuracy ranking (Random Forest highlighted)
-2. **bar_all_metrics.png** — Accuracy vs F1-Score grouped comparison
-3. **radar_chart.png** — Multi-dimensional performance spider chart
-4. **comparison_table.csv** — Raw metrics data for further analysis
+For full analysis: [Read REPORT.md](REPORT.md)
 
 ---
 
