@@ -204,29 +204,60 @@ Raw metrics data (Model, Accuracy, Precision, Recall, F1, Note) exported to CSV 
 
 ## Using the Deployed Models
 
-All 5 trained models are available in the `demo/` folder for immediate use:
+All 5 trained models are stored as `.pkl` (pickled) files in the `demo/` folder for immediate use.
+
+### What Each File Contains
+
+**5 Trained Classifiers:**
+- `logistic_regression_model.pkl` — Logistic Regression (93% accuracy)
+- `naive_bayes_model.pkl` — Naive Bayes (83% accuracy)
+- `svm_model.pkl` — SVM with Nystroem (97% accuracy)
+- `knn_model.pkl` — KNN with K=5 (98.2% accuracy)
+- `random_forest_model.pkl` — Random Forest (97.59% accuracy, **DEPLOYED**)
+
+**2 Shared Preprocessing Tools (required for all models):**
+- `scaler.pkl` — StandardScaler that normalizes 18 input features
+  - Without this, raw feature values will give wrong predictions
+  - Scales features to approximately [-1, 1] range
+
+- `label_encoder.pkl` — Converts between text labels and numeric indices
+  - Maps: BENIGN↔0, DDoS↔1, PortScan↔2, Bot↔3, Web Attack↔4, Infiltration↔5
+  - Models output numeric indices → need encoder to convert back to readable labels
+  - Shared because all models use the same 6 attack classes
+
+### Data Flow
 
 ```
-demo/
-├── logistic_regression_model.pkl  ← LR classifier
-├── naive_bayes_model.pkl          ← NB classifier
-├── svm_model.pkl                  ← SVM classifier
-├── knn_model.pkl                  ← KNN classifier (K=5)
-├── random_forest_model.pkl        ← RF classifier (100 trees, DEPLOYED)
-├── scaler.pkl                     ← Feature StandardScaler (shared)
-└── label_encoder.pkl              ← Class label encoder (shared)
+Raw network flow features (18 numbers)
+          ↓
+    scaler.pkl (normalize)
+          ↓
+    Scaled features [-1 to 1]
+          ↓
+    Model.predict()
+          ↓
+    Numeric output [0, 1, 2, 3, 4, or 5]
+          ↓
+    label_encoder.pkl (inverse_transform)
+          ↓
+    Text label: "BENIGN", "DDoS", "PortScan", etc.
 ```
 
 ### Quick Start with All 5 Models
 ```bash
 # 1. Download from Google Drive (see GUIDE.md)
 # 2. Place all 7 files in demo/ folder
-# 3. Run real-time prediction demo with all 5 models:
+
+# 3a. Run real-time prediction demo with all 5 models:
 python phase6_demo.py
 
-# 4. Or compare models with charts:
+# 3b. Or view model comparison charts with training results:
 python model_comparison.py
 ```
+
+**Note:** 
+- `phase6_demo.py` loads the actual trained models from demo/ and makes predictions
+- `model_comparison.py` uses hardcoded training results to generate comparison visualizations
 
 ### All 5 Models Available
 
@@ -251,57 +282,85 @@ python model_comparison.py
   - PortScan Detection: 99.9%
   - Bot Detection: 92.3%
 
-### Integration Example: Single Model
+### Integration Example: Single Model (Random Forest - Deployed)
 ```python
 import joblib
 
-# Load Random Forest (deployed model)
+# ========== LOAD ARTIFACTS ==========
+# Model: trained classifier
 model = joblib.load('demo/random_forest_model.pkl')
+
+# Scaler: normalizes raw features (MUST USE - different scale = wrong predictions)
 scaler = joblib.load('demo/scaler.pkl')
+
+# Encoder: converts numeric predictions back to text labels
 label_encoder = joblib.load('demo/label_encoder.pkl')
 
-# Predict on new flow
+# ========== INPUT: RAW FEATURES ==========
+# 18 network flow features (raw values)
 flow_features = [6, 120, 25, 30, 1250, 1500, 150, 100, 500, 50, 120, 80, 1, 5, 0, 0, 0, 0]
-X_scaled = scaler.transform([flow_features])
-prediction = model.predict(X_scaled)[0]
-attack_type = label_encoder.inverse_transform([prediction])[0]
 
-print(f"Detected: {attack_type}")
+# ========== PROCESS ==========
+# 1. Normalize features
+X_scaled = scaler.transform([flow_features])  # [-1 to 1] range
+
+# 2. Make prediction (returns numeric index)
+prediction = model.predict(X_scaled)[0]  # e.g., 2
+
+# 3. Convert numeric output to text
+attack_type = label_encoder.inverse_transform([prediction])[0]  # e.g., "PortScan"
+
+# ========== OUTPUT ==========
+print(f"Detected: {attack_type}")  # → "BENIGN", "DDoS", "PortScan", "Bot", "Web Attack", or "Infiltration"
 ```
 
-### Integration Example: All 5 Models with Consensus
+### Integration Example: All 5 Models with Consensus Voting
 ```python
 import joblib
 from collections import Counter
 
-# Load all 5 models
+# ========== LOAD ALL 5 MODELS ==========
 models = {
-    'lr': joblib.load('demo/logistic_regression_model.pkl'),
-    'nb': joblib.load('demo/naive_bayes_model.pkl'),
-    'svm': joblib.load('demo/svm_model.pkl'),
-    'knn': joblib.load('demo/knn_model.pkl'),
-    'rf': joblib.load('demo/random_forest_model.pkl'),
+    'lr': joblib.load('demo/logistic_regression_model.pkl'),        # 93% accuracy
+    'nb': joblib.load('demo/naive_bayes_model.pkl'),                # 83% accuracy
+    'svm': joblib.load('demo/svm_model.pkl'),                       # 97% accuracy
+    'knn': joblib.load('demo/knn_model.pkl'),                       # 98.2% accuracy
+    'rf': joblib.load('demo/random_forest_model.pkl'),              # 97.59% (DEPLOYED)
 }
-scaler = joblib.load('demo/scaler.pkl')
-label_encoder = joblib.load('demo/label_encoder.pkl')
 
-# Predict with all models
+# ========== LOAD SHARED PREPROCESSING ==========
+scaler = joblib.load('demo/scaler.pkl')              # Normalize features
+label_encoder = joblib.load('demo/label_encoder.pkl')  # Convert numbers to labels
+
+# ========== INPUT ==========
+# 18 network flow features
 flow_features = [6, 120, 25, 30, 1250, 1500, 150, 100, 500, 50, 120, 80, 1, 5, 0, 0, 0, 0]
+
+# ========== NORMALIZE ==========
 X_scaled = scaler.transform([flow_features])
 
+# ========== PREDICT WITH ALL 5 MODELS ==========
 predictions = {}
 for name, model in models.items():
-    pred_idx = model.predict(X_scaled)[0]
-    predictions[name] = label_encoder.classes_[pred_idx]
+    pred_idx = model.predict(X_scaled)[0]  # Get numeric output
+    predictions[name] = label_encoder.classes_[pred_idx]  # Convert to text
 
-# Get consensus (majority vote)
+# ========== CONSENSUS (MAJORITY VOTE) ==========
+# Find which label appears most (most models agree)
 consensus = Counter(predictions.values()).most_common(1)[0][0]
-print(f"LR: {predictions['lr']}")
-print(f"NB: {predictions['nb']}")
-print(f"SVM: {predictions['svm']}")
-print(f"KNN: {predictions['knn']}")
-print(f"RF: {predictions['rf']}")
-print(f"Consensus: {consensus}")
+
+# ========== OUTPUT ==========
+print("Individual Predictions:")
+print(f"  LR:  {predictions['lr']}")
+print(f"  NB:  {predictions['nb']}")
+print(f"  SVM: {predictions['svm']}")
+print(f"  KNN: {predictions['knn']}")
+print(f"  RF:  {predictions['rf']}")
+print()
+print(f"Consensus (Majority Vote): {consensus}")
+print(f"  → If 5/5 models agree, confidence = 100%")
+print(f"  → If 3/5 models agree, confidence = 60%")
+print(f"  → etc.")
 ```
 
 ---

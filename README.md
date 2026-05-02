@@ -6,6 +6,12 @@ A machine learning-based Network Intrusion Detection System that compares 5 ML m
 
 ---
 
+## 👋 New Here?
+
+**Start with [GETTING_STARTED.md](GETTING_STARTED.md)** — A beginner-friendly guide that explains everything in simple terms.
+
+---
+
 ## 📊 Quick Model Comparison
 
 | Model | Accuracy | F1-Score | Best For |
@@ -27,9 +33,10 @@ A machine learning-based Network Intrusion Detection System that compares 5 ML m
 pip install -r requirements.txt
 python phase6_demo.py
 ```
-Runs instant predictions with **all 5 models** on synthetic network flows:
-- Shows predictions from each model side-by-side
-- Computes consensus prediction (voting)
+Runs real-time predictions with **all 5 models** on synthetic network flows:
+- Loads all 5 trained models from demo/ folder (or creates demo models if missing)
+- Shows predictions from each model side-by-side with confidence scores
+- Computes consensus prediction (majority vote)
 - Displays Suricata-format alerts
 - Compares model agreement
 
@@ -47,17 +54,16 @@ Runs instant predictions with **all 5 models** on synthetic network flows:
 # 3. Run:
 python phase6_demo.py
 
-# For FULL ANALYSIS:
-# Extract all files to respective folders:
-# - HoangAnh_N23DCCN071/data/processed/
-# - HoangAnh_N23DCCN071/data/final/
-# - HoangAnh_N23DCCN071/artifacts/
-# - HoangAnh_N23DCCN071/outputs/
-# - N23DCCN001_DangKimAn/data/artifacts/
-# - N23DCCN138_PhamQuocAn/outputs/
-# - outputs/comparison/
+# For FULL ANALYSIS (with comparison charts):
+# Option A: Download comparison outputs to generate charts
+# Extract to outputs/comparison/
 # Then run:
 python model_comparison.py  # View all comparison charts
+
+# Option B: Download pre-trained models for real-time predictions
+# Extract demo/ folder (7 model files)
+# Then run:
+python phase6_demo.py       # Real-time predictions with all 5 models
 ```
 
 ### 3️⃣ Train Yourself on Kaggle (2-4 hours)
@@ -95,8 +101,9 @@ python model_comparison.py    # 1 min
 
 | Document | Purpose | Read When |
 |----------|---------|-----------|
-| **[GUIDE.md](GUIDE.md)** | Complete project guide with all details | You want to understand everything |
-| **[REPORT.md](REPORT.md)** | Detailed model analysis & deployment decision | You want deep technical analysis |
+| **[GETTING_STARTED.md](GETTING_STARTED.md)** | Beginner-friendly overview & learning path | **Start here first!** |
+| **[GUIDE.md](GUIDE.md)** | Complete step-by-step guide with all details | You want to understand everything |
+| **[REPORT.md](REPORT.md)** | Detailed model analysis & deployment decision | You need code examples or deep analysis |
 
 ---
 
@@ -111,10 +118,14 @@ is_security_group1/
 ├── phase6_demo.py                      ← Real-time prediction demo
 ├── requirements.txt                    ← Dependencies
 │
-├── demo/                               ← Pre-trained Random Forest model
-│   ├── random_forest_model.pkl         ← Download from Google Drive
-│   ├── scaler.pkl                      ← Download from Google Drive
-│   └── label_encoder.pkl               ← Download from Google Drive
+├── demo/                               ← Pre-trained models (download from Google Drive)
+│   ├── logistic_regression_model.pkl   ← TV3 model
+│   ├── naive_bayes_model.pkl           ← TV3 model
+│   ├── svm_model.pkl                   ← TV3 model
+│   ├── knn_model.pkl                   ← TV4 model
+│   ├── random_forest_model.pkl         ← TV4 model (DEPLOYED)
+│   ├── scaler.pkl                      ← Feature scaling
+│   └── label_encoder.pkl               ← Class labels
 │
 ├── HoangAnh_N23DCCN071/                (TV1: Preprocessing + TV2: Feature selection)
 │   ├── preprocess.py
@@ -184,6 +195,27 @@ is_security_group1/
 
 ---
 
+## 📦 .pkl Files (Trained Models)
+
+All models are stored as `.pkl` (pickled) files - serialized Python objects that contain trained classifiers.
+
+**5 Model Files (in demo/ folder):**
+| File | Model | Accuracy | Source |
+|------|-------|----------|--------|
+| `logistic_regression_model.pkl` | Logistic Regression | 93.00% | TV3 |
+| `naive_bayes_model.pkl` | Naive Bayes | 83.00% | TV3 |
+| `svm_model.pkl` | SVM (Nystroem) | 97.00% | TV3 |
+| `knn_model.pkl` | KNN (K=5) | 98.20% | TV4 |
+| `random_forest_model.pkl` | Random Forest | 97.59% | TV4 (DEPLOYED) |
+
+**2 Shared Files (used by all models):**
+- `scaler.pkl` — StandardScaler that normalizes features to [-1, 1]
+  - **Must be used** before predictions, otherwise models give wrong results
+- `label_encoder.pkl` — Maps numeric predictions to text labels
+  - 0↔BENIGN, 1↔DDoS, 2↔PortScan, 3↔Bot, 4↔Web Attack, 5↔Infiltration
+
+---
+
 ## 🔧 18 Core Features Used
 
 The model uses these standardized network flow features:
@@ -195,11 +227,11 @@ Flow Byts/s, Flow Pkts/s, Pkt Len Mean, Pkt Len Std,
 SYN Flag Cnt, ACK Flag Cnt, FIN Flag Cnt, RST Flag Cnt, PSH Flag Cnt, URG Flag Cnt
 ```
 
-**Hyperparameters:**
+**Training Configuration:**
 - Train/Test Split: 80/20 (stratified)
 - SMOTE: Oversample minorities to 10%
 - RandomUnderSampler: Cap majority at 3× minority
-- Random Forest: 100 trees, random_state=42
+- Random Forest: 100 decision trees, random_state=42
 
 ---
 

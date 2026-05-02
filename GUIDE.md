@@ -214,7 +214,7 @@ python prepare_model_data.py
 ```
 
 **What it does:**
-- Selects **18 core features** (from config.py)
+- Selects **18 core features:** Protocol, Flow Duration, Tot Fwd Pkts, Tot Bwd Pkts, TotLen Fwd Pkts, TotLen Bwd Pkts, Fwd Pkt Len Mean, Bwd Pkt Len Mean, Flow Byts/s, Flow Pkts/s, Pkt Len Mean, Pkt Len Std, SYN Flag Cnt, ACK Flag Cnt, FIN Flag Cnt, RST Flag Cnt, PSH Flag Cnt, URG Flag Cnt
 - Encodes Protocol column (TCP/UDP/ICMP)
 - Applies SMOTE (oversample minorities to 10%)
 - Applies RandomUnderSampler (cap majority at 3× minority)
@@ -312,6 +312,11 @@ logs/alerts.log  ← Sample Suricata-format alerts
 python model_comparison.py
 ```
 
+**What it does:**
+- Uses **hardcoded training results** from TV3 & TV4 (not loading models)
+- Generates comparison visualizations
+- Exports metrics to CSV
+
 **Console output:**
 ```
 ==========================================================================================
@@ -319,11 +324,11 @@ python model_comparison.py
 ==========================================================================================
 Model                  Accuracy   Precision  Recall  F1       Note
 ------------------------------------------------------------------------------------------
-KNN (K=5)              0.9820     0.9820     0.9820  0.9820   Best accuracy
-Random Forest          0.9759     0.9759     0.9759  0.9759   DEPLOYED
-SVM (Nystroem)         0.9700     N/A        N/A     0.64
-Logistic Regression    0.9300     N/A        N/A     0.71
-Naive Bayes            0.8300     N/A        N/A     0.60
+KNN (K=5)              0.9820     0.9820     0.9820  0.9820   Training: Best accuracy
+Random Forest          0.9759     0.9759     0.9759  0.9759   Training: DEPLOYED
+SVM (Nystroem)         0.9700     N/A        N/A     0.64     Training: Nystroem approximation
+Logistic Regression    0.9300     N/A        N/A     0.71     Training: Baseline
+Naive Bayes            0.8300     N/A        N/A     0.60     Training: Simple classifier
 ==========================================================================================
 ```
 
@@ -335,6 +340,22 @@ outputs/comparison/
 ├── radar_chart.png               ← Multi-dimensional spider chart
 └── comparison_table.csv          ← Raw metrics
 ```
+
+---
+
+### Phase 6: Real-time Prediction Demo
+```bash
+python phase6_demo.py
+```
+
+**What it does:**
+- **Loads all 5 trained models** from demo/ folder (or creates demo models if missing)
+- Generates 10 synthetic network flows
+- Makes predictions with each model
+- Shows **consensus prediction** (majority vote)
+- Formats Suricata-style alerts
+
+**Note:** phase6_demo.py requires the 5 models in demo/ folder OR will create quick demo models for testing
 
 ---
 
@@ -364,25 +385,42 @@ Random Forest: 100 trees
 ### Load and Predict
 ```python
 import joblib
-import pandas as pd
-from config import SELECTED_FEATURES
 
-# Load artifacts
-model = joblib.load('artifacts/random_forest_model.pkl')
-scaler = joblib.load('artifacts/scaler.pkl')
-label_encoder = joblib.load('artifacts/label_encoder.pkl')
+# ============================================
+# Step 1: Load trained artifacts
+# ============================================
+model = joblib.load('demo/random_forest_model.pkl')
+scaler = joblib.load('demo/scaler.pkl')           # StandardScaler (normalize features)
+label_encoder = joblib.load('demo/label_encoder.pkl')  # Text ↔ numeric converter
 
-# Load test data
-X_test = pd.read_csv('data/final/X_test.csv').head(10)
+# ============================================
+# Step 2: Prepare features (18 core features)
+# ============================================
+# Protocol, Flow Duration, Tot Fwd Pkts, Tot Bwd Pkts,
+# TotLen Fwd Pkts, TotLen Bwd Pkts, Fwd Pkt Len Mean, Bwd Pkt Len Mean,
+# Flow Byts/s, Flow Pkts/s, Pkt Len Mean, Pkt Len Std,
+# SYN Flag Cnt, ACK Flag Cnt, FIN Flag Cnt, RST Flag Cnt, PSH Flag Cnt, URG Flag Cnt
+flow_features = [6, 120, 25, 30, 1250, 1500, 150, 100, 500, 50, 120, 80, 1, 5, 0, 0, 0, 0]
 
-# Predict
-X_scaled = scaler.transform(X_test)
-predictions = model.predict(X_scaled)
-attack_types = label_encoder.inverse_transform(predictions)
+# ============================================
+# Step 3: Scale features (IMPORTANT!)
+# ============================================
+# Scaler normalizes raw features to ~[-1, 1]
+# Without this, model will give wrong predictions
+X_scaled = scaler.transform([flow_features])
 
-print("Predictions:")
-for i, attack in enumerate(attack_types):
-    print(f"  Flow {i+1}: {attack}")
+# ============================================
+# Step 4: Make prediction
+# ============================================
+prediction = model.predict(X_scaled)[0]  # Returns numeric index (0-5)
+
+# ============================================
+# Step 5: Convert numeric prediction to text
+# ============================================
+# 0→"BENIGN", 1→"DDoS", 2→"PortScan", 3→"Bot", 4→"Web Attack", 5→"Infiltration"
+attack_type = label_encoder.inverse_transform([prediction])[0]
+
+print(f"Detected: {attack_type}")
 ```
 
 ### Run Phase 6 Demo (No Training Required)
@@ -413,18 +451,33 @@ python phase6_demo.py
 | Logistic Reg | 93.00% | Fast baseline | Baseline only |
 | Naive Bayes | 83.00% | Quick filter | Not recommended |
 
+### Two Ways to View Model Comparison
+
+**1. Training Results Visualization (model_comparison.py)**
+- Uses hardcoded metrics from TV3 & TV4 training
+- Generates bar charts and radar charts
+- Shows theoretical performance on training data
+- Run: `python model_comparison.py`
+
+**2. Real-time Predictions (phase6_demo.py)**
+- Loads actual trained models from demo/ folder
+- Makes predictions on synthetic network flows
+- Shows consensus across all 5 models
+- Demonstrates model agreement/disagreement
+- Run: `python phase6_demo.py`
+
 ---
 
 ## Troubleshooting
 
 | Problem | Solution |
 |---------|----------|
-| `FileNotFoundError: data/raw` | Download 8 CSVs from Kaggle and extract to data/raw/ |
+| `FileNotFoundError: data/raw` | Download 8 CSVs from Kaggle and extract to HoangAnh_N23DCCN071/data/raw/ |
 | `MemoryError` during TV4 | Run TV4 on Kaggle instead (cloud has more RAM) |
 | `ModuleNotFoundError: sklearn` | Run `pip install -r requirements.txt` again |
 | Script runs very slow | Jupyter notebooks on local machine are slow; use Kaggle |
 | Can't open PNG files | Use image viewer or browser: `open outputs/comparison/bar_accuracy.png` |
-| `KeyError: Feature name` | Some CSVs have different column names; config.FEATURE_ALT_NAMES handles this |
+| Missing trained models in demo/ | Download from Google Drive and place 7 files in demo/ folder |
 
 ---
 
@@ -444,11 +497,11 @@ python phase6_demo.py
 
 ## Next Steps
 
-1. **Want quick demo?** → `python phase6_demo.py`
-2. **Want to understand models?** → Read the MODEL_COMPARISON section above
-3. **Want detailed analysis?** → Read REPORT.md
-4. **Want to run full pipeline?** → Follow "How to Run" sections (needs Kaggle dataset)
-5. **Want to modify config?** → Edit config.py (affects all models)
+1. **Want quick demo?** → `python phase6_demo.py` (shows all 5 models with consensus)
+2. **Want to compare models?** → `python model_comparison.py` (generates charts with training results)
+3. **Want to understand why RF was deployed?** → Read REPORT.md
+4. **Want to run full training pipeline?** → Follow "How to Run" sections (needs Kaggle dataset)
+5. **Want to download pre-trained models?** → Check Google Drive link in Quick Start section
 
 ---
 
@@ -459,6 +512,54 @@ python phase6_demo.py
 | Hoàng Anh | N23DCCN071 | TV1 + TV2 | Data preprocessing, feature selection, balancing |
 | Đặng Kim An | N23DCCN001 | TV3 | Logistic Regression, Naive Bayes, SVM |
 | Phạm Quốc An | N23DCCN138 | TV4 | KNN, Random Forest, real-time deployment |
+
+---
+
+## Understanding .pkl Files (Pickled Models)
+
+### What is a .pkl file?
+`.pkl` files are serialized Python objects (using joblib/pickle). They contain trained machine learning models and preprocessing tools.
+
+### Files in demo/ folder:
+
+**Model Files (5 total):**
+```
+logistic_regression_model.pkl   ← Trained classifier from TV3
+naive_bayes_model.pkl           ← Trained classifier from TV3
+svm_model.pkl                   ← Trained classifier from TV3
+knn_model.pkl                   ← Trained classifier from TV4
+random_forest_model.pkl         ← Trained classifier from TV4 (DEPLOYED)
+```
+
+**Shared Preprocessing Files (2 total):**
+```
+scaler.pkl          ← StandardScaler: Normalizes input features to ~[-1, 1]
+                      (All 5 models share this, trained during TV2)
+
+label_encoder.pkl   ← LabelEncoder: Converts between text labels ↔ numeric indices
+                      Text: "BENIGN", "DDoS", "PortScan", "Bot", "Web Attack", "Infiltration"
+                      ↕️
+                      Numbers: 0, 1, 2, 3, 4, 5
+                      (Shared by all 5 models, created during training)
+```
+
+### How they work together:
+
+```
+Raw Input Features [6, 120, 25, 30, ...] (18 values)
+  ↓
+scaler.pkl (StandardScaler.transform)
+  ↓
+Normalized Features [-0.5, 1.2, 0.3, ...] (scaled)
+  ↓
+Model.predict(scaled_features)
+  ↓
+Numeric Output [2] (e.g., index 2)
+  ↓
+label_encoder.pkl (inverse_transform)
+  ↓
+Text Result "PortScan" (human-readable)
+```
 
 ---
 
@@ -474,13 +575,13 @@ is_security_group1/
 ├── requirements.txt               ← Python dependencies
 │
 ├── demo/                          ← Pre-trained models (from Google Drive)
-│   ├── logistic_regression_model.pkl   ← Download & place here
-│   ├── naive_bayes_model.pkl           ← Download & place here
-│   ├── svm_model.pkl                   ← Download & place here
-│   ├── knn_model.pkl                   ← Download & place here
-│   ├── random_forest_model.pkl         ← Download & place here
-│   ├── scaler.pkl                      ← Shared StandardScaler
-│   └── label_encoder.pkl               ← Shared LabelEncoder
+│   ├── logistic_regression_model.pkl   ← TV3: Logistic Regression classifier
+│   ├── naive_bayes_model.pkl           ← TV3: Naive Bayes classifier
+│   ├── svm_model.pkl                   ← TV3: SVM with Nystroem classifier
+│   ├── knn_model.pkl                   ← TV4: KNN (K=5) classifier
+│   ├── random_forest_model.pkl         ← TV4: Random Forest (100 trees, DEPLOYED)
+│   ├── scaler.pkl                      ← Shared: Feature StandardScaler
+│   └── label_encoder.pkl               ← Shared: Label encoder (BENIGN↔0, DDoS↔1, etc.)
 │
 ├── HoangAnh_N23DCCN071/           (TV1: Preprocessing + TV2: Features)
 │   ├── preprocess.py              → Loads 8 CSVs, generates EDA charts

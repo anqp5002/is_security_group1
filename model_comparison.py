@@ -22,7 +22,6 @@ Outputs (saved to outputs/comparison/):
 import os
 import sys
 import io
-import joblib
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -38,105 +37,63 @@ if sys.stdout.encoding != 'utf-8':
 OUTPUT_DIR = os.path.join("outputs", "comparison")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-DEMO_DIR = "demo"
-
-# ============================================================================
-# Load 5 Models from demo/ Folder
-# ============================================================================
-
-def load_models_from_demo():
-    """Load all 5 pre-trained models from demo folder"""
-
-    print("\n" + "=" * 90)
-    print("  LOADING 5 MODELS FROM DEMO/ FOLDER")
-    print("=" * 90 + "\n")
-
-    models = {}
-    model_files = {
-        "Logistic Regression": "logistic_regression_model.pkl",
-        "Naive Bayes": "naive_bayes_model.pkl",
-        "SVM (Nystroem)": "svm_model.pkl",
-        "KNN (K=5)": "knn_model.pkl",
-        "Random Forest": "random_forest_model.pkl",
-    }
-
-    for model_name, filename in model_files.items():
-        filepath = os.path.join(DEMO_DIR, filename)
-        try:
-            model = joblib.load(filepath)
-            models[model_name] = model
-            print(f"  ✓ {model_name:25} loaded from {filepath}")
-        except FileNotFoundError:
-            print(f"  ✗ {model_name:25} NOT FOUND in {filepath}")
-
-    if models:
-        print(f"\n✓ Successfully loaded {len(models)}/5 models from demo/ folder\n")
-    else:
-        print("\n⚠️  No models found in demo/ folder. Using training results only.\n")
-
-    return models
-
-# Load models
-MODELS = load_models_from_demo()
-
-print("=" * 90)
-print("  TRAINING RESULTS FROM TV3 & TV4")
+print("\n" + "=" * 90)
+print("  MODEL COMPARISON RESULTS")
 print("=" * 90 + "\n")
 
 # ---------------------------------------------------------------------------
-# 1. Collected Results
-#    Source: member READMEs + notebook outputs.
-#    TV3 reports macro-averaged F1; TV4 reports weighted-average metrics.
-#    Precision / Recall marked None where not reported by TV3.
+# 1. Training Results from TV3 & TV4
 # ---------------------------------------------------------------------------
 
 RESULTS = [
-    {
-        "Model":     "Logistic Regression",
-        "Member":    "TV3",
-        "Accuracy":  0.93,
-        "Precision": None,
-        "Recall":    None,
-        "F1":        0.71,   # macro
-        "Note":      "Smoothed class weights, outlier clipping",
-    },
-    {
-        "Model":     "Naive Bayes",
-        "Member":    "TV3",
-        "Accuracy":  0.83,
-        "Precision": None,
-        "Recall":    None,
-        "F1":        0.60,   # macro
-        "Note":      "CategoricalNB with equal-width binning",
-    },
-    {
-        "Model":     "SVM (Nystroem)",
-        "Member":    "TV3",
-        "Accuracy":  0.97,
-        "Precision": None,
-        "Recall":    None,
-        "F1":        0.64,   # macro
-        "Note":      "Nystroem RBF approximation for scalability",
-    },
-    {
-        "Model":     "KNN (K=5)",
-        "Member":    "TV4",
-        "Accuracy":  0.9820,
-        "Precision": 0.9820,
-        "Recall":    0.9820,
-        "F1":        0.9820,  # weighted
-        "Note":      "Weak on PortScan (84.8%) and Bot (62.4%) recall",
-    },
-    {
-        "Model":     "Random Forest",
-        "Member":    "TV4",
-        "Accuracy":  0.9759,
-        "Precision": 0.9759,
-        "Recall":    0.9759,
-        "F1":        0.9759,  # weighted
-        "Note":      "DEPLOYED — PortScan 99.9%, Bot 92.3% recall",
-    },
-]
+        {
+            "Model":     "Logistic Regression",
+            "Member":    "TV3",
+            "Accuracy":  0.93,
+            "Precision": None,
+            "Recall":    None,
+            "F1":        0.71,   # macro
+            "Note":      "Training: Smoothed class weights, outlier clipping",
+        },
+        {
+            "Model":     "Naive Bayes",
+            "Member":    "TV3",
+            "Accuracy":  0.83,
+            "Precision": None,
+            "Recall":    None,
+            "F1":        0.60,   # macro
+            "Note":      "Training: CategoricalNB with equal-width binning",
+        },
+        {
+            "Model":     "SVM (Nystroem)",
+            "Member":    "TV3",
+            "Accuracy":  0.97,
+            "Precision": None,
+            "Recall":    None,
+            "F1":        0.64,   # macro
+            "Note":      "Training: Nystroem RBF approximation for scalability",
+        },
+        {
+            "Model":     "KNN (K=5)",
+            "Member":    "TV4",
+            "Accuracy":  0.9820,
+            "Precision": 0.9820,
+            "Recall":    0.9820,
+            "F1":        0.9820,  # weighted
+            "Note":      "Training: Weak on PortScan (84.8%) and Bot (62.4%)",
+        },
+        {
+            "Model":     "Random Forest",
+            "Member":    "TV4",
+            "Accuracy":  0.9759,
+            "Precision": 0.9759,
+            "Recall":    0.9759,
+            "F1":        0.9759,  # weighted
+            "Note":      "Training: DEPLOYED — PortScan 99.9%, Bot 92.3%",
+        },
+    ]
+
+print("Using TRAINING RESULTS from TV3 & TV4\n")
 
 df = pd.DataFrame(RESULTS)
 df_sorted = df.sort_values("Accuracy", ascending=False).reset_index(drop=True)

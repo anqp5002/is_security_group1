@@ -7,6 +7,19 @@ This script demonstrates:
 3. Comparing predictions across models
 4. Formatting Suricata-style alerts
 
+Trained models are stored as .pkl files in demo/ folder:
+
+  MODELS (trained on 18 features):
+    - logistic_regression_model.pkl  (TV3 - Logistic Regression)
+    - naive_bayes_model.pkl           (TV3 - Naive Bayes)
+    - svm_model.pkl                   (TV3 - SVM with Nystroem)
+    - knn_model.pkl                   (TV4 - KNN with K=5)
+    - random_forest_model.pkl         (TV4 - Random Forest, DEPLOYED)
+
+  SHARED PREPROCESSING (used by all models):
+    - scaler.pkl                      (Feature StandardScaler - scales 18 features to [-1, 1])
+    - label_encoder.pkl               (Converts text labels ↔ numbers: BENIGN↔0, DDoS↔1, etc.)
+
 If trained models don't exist in demo/ folder, creates quick demo models for testing.
 
 Run:
@@ -69,7 +82,16 @@ MODEL_CONFIGS = {
 # ============================================================================
 
 def load_all_models():
-    """Load all 5 trained models + shared scaler + label encoder from demo folder"""
+    """
+    Load all 5 trained models + shared preprocessing artifacts from demo folder.
+
+    Each model file (.pkl) contains a trained classifier.
+    Shared artifacts:
+      - scaler.pkl: StandardScaler that normalizes 18 features to ~[-1, 1]
+        (trained on the entire dataset, used by all 5 models)
+      - label_encoder.pkl: Maps text labels ↔ numeric indices
+        (BENIGN↔0, DDoS↔1, PortScan↔2, Bot↔3, Web Attack↔4, Infiltration↔5)
+    """
 
     models = {}
     scaler_path = os.path.join(DEMO_DIR, "scaler.pkl")
