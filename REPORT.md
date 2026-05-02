@@ -202,6 +202,57 @@ Raw metrics data (Model, Accuracy, Precision, Recall, F1, Note) exported to CSV 
 
 ---
 
+## Using the Deployed Model
+
+The trained Random Forest model is available in the `demo/` folder for immediate use:
+
+```
+demo/
+├── random_forest_model.pkl    ← Trained RF classifier (100 trees)
+├── scaler.pkl                 ← Feature StandardScaler
+└── label_encoder.pkl          ← Class label encoder
+```
+
+### Quick Start
+```bash
+# 1. Download from Google Drive (see GUIDE.md)
+# 2. Place 3 files in demo/ folder
+# 3. Run real-time prediction demo:
+python phase6_demo.py
+```
+
+### Model Specification
+- **Algorithm:** Random Forest with 100 decision trees
+- **Input:** 18 network flow features
+- **Output Classes:** BENIGN, DDoS, PortScan, Bot, Web Attack, Infiltration
+- **Performance:**
+  - Overall Accuracy: 97.59%
+  - PortScan Detection: 99.9%
+  - Bot Detection: 92.3%
+  - Inference Latency: <100ms per prediction
+  - Throughput: 10,000+ predictions/second
+
+### Integration Example
+```python
+import joblib
+import pandas as pd
+
+# Load pre-trained model
+model = joblib.load('demo/random_forest_model.pkl')
+scaler = joblib.load('demo/scaler.pkl')
+label_encoder = joblib.load('demo/label_encoder.pkl')
+
+# Make prediction on new flow
+flow_features = [6, 120, 25, 30, 1250, 1500, 150, 100, 500, 50, 120, 80, 1, 5, 0, 0, 0, 0]
+X_scaled = scaler.transform([flow_features])
+prediction = model.predict(X_scaled)[0]
+attack_type = label_encoder.inverse_transform([prediction])[0]
+
+print(f"Detected: {attack_type}")
+```
+
+---
+
 ## Conclusion
 
 **Random Forest deployment is recommended** based on:

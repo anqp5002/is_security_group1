@@ -11,7 +11,7 @@
 3. [File Structure & What Each File Does](#file-structure)
 4. [How to Run (Step by Step)](#how-to-run)
 5. [Model Comparison & Results](#model-comparison)
-6. [Config & Utils Explanation](#config--utils)
+6. [Google Drive: Pre-trained Results](#google-drive-pre-trained-results)
 7. [Troubleshooting](#troubleshooting)
 
 ---
@@ -26,16 +26,39 @@ python phase6_demo.py
 **Output:** Real-time predictions on network flows with Suricata-format alerts
 
 ### Option 2: Use Pre-trained Models (Recommended ⭐)
+
+**For Quick Demo (Just run phase6_demo.py):**
 ```bash
-# Download all outputs from Google Drive:
+# 1. Download from Google Drive:
 # https://drive.google.com/drive/folders/11JVbhnkZmTAB5ptHeTcQ9F00Y51MoEam
 
-# Extract to project directories:
-# - Place all files to respective folders (see structure below)
+# 2. Download these 3 files:
+#    - random_forest_model.pkl
+#    - scaler.pkl
+#    - label_encoder.pkl
 
-# Then run:
-python phase6_demo.py                    # Use trained RF model
-python model_comparison.py               # View comparison charts
+# 3. Place them in the demo/ folder:
+mkdir -p demo/
+# Copy the 3 files into: demo/
+
+# 4. Run demo:
+python phase6_demo.py
+```
+
+**For Full Analysis (With comparison charts):**
+```bash
+# Extract all outputs to their respective folders:
+# - HoangAnh_N23DCCN071/data/processed/
+# - HoangAnh_N23DCCN071/data/final/
+# - HoangAnh_N23DCCN071/artifacts/
+# - HoangAnh_N23DCCN071/outputs/
+# - N23DCCN001_DangKimAn/data/artifacts/
+# - N23DCCN138_PhamQuocAn/outputs/
+# - outputs/comparison/
+# - demo/ (3 model files)
+
+# Then run comparison:
+python model_comparison.py
 ```
 
 ### Option 3: Train Everything on Kaggle (2-4 hours)
@@ -442,8 +465,13 @@ is_security_group1/
 ├── GUIDE.md                       ← Complete documentation (THIS FILE)
 ├── REPORT.md                      ← Model analysis & deployment decision
 ├── model_comparison.py            ← Compare 5 models, generate charts
-├── phase6_demo.py                 ← Real-time prediction demo
+├── phase6_demo.py                 ← Real-time prediction demo (loads from demo/)
 ├── requirements.txt               ← Python dependencies
+│
+├── demo/                          ← Pre-trained Random Forest model (from Google Drive)
+│   ├── random_forest_model.pkl    ← Download & place here
+│   ├── scaler.pkl                 ← Download & place here
+│   └── label_encoder.pkl          ← Download & place here
 │
 ├── HoangAnh_N23DCCN071/           (TV1: Preprocessing + TV2: Features)
 │   ├── preprocess.py              → Loads 8 CSVs, generates EDA charts
@@ -453,7 +481,7 @@ is_security_group1/
 │   │   ├── processed/             (Output: cleaned data)
 │   │   └── final/                 (Output: train/test splits)
 │   ├── artifacts/                 (scaler.pkl, label_encoder.pkl)
-│   ├── outputs/                   (EDA charts)
+│   ├── outputs/                   (EDA charts: attack_distribution.png, correlation_heatmap.png)
 │   └── requirements.txt
 │
 ├── N23DCCN001_DangKimAn/          (TV3: LR, NB, SVM models)
@@ -461,15 +489,17 @@ is_security_group1/
 │   │   ├── logistic_regression.ipynb
 │   │   ├── naive_bayes.ipynb
 │   │   └── svm.ipynb
-│   ├── data/artifacts/            (confusion matrices)
+│   ├── data/artifacts/            (confusion matrices: logistic_regression.png, naive_algorithm.png, svm_v5_confusion_matrix.png)
 │   └── README.md
 │
-└── N23DCCN138_PhamQuocAn/         (TV4: KNN, RF models + alerts)
-    ├── notebooks/
-    │   └── IDS_ML_Notebook.py     → KNN & RF training
-    ├── logs/                       (alerts.log)
-    ├── artifacts/                  (trained models)
-    └── README.md
+├── N23DCCN138_PhamQuocAn/         (TV4: KNN, RF models + alerts)
+│   ├── notebooks/
+│   │   └── IDS_ML_Notebook.py     → KNN & RF training
+│   ├── outputs/                   (confusion matrices: cm_KNN.png, cm_Random_Forest.png, model_comparison.png)
+│   └── README.md
+│
+└── outputs/
+    └── comparison/                (TV5 outputs: bar_accuracy.png, bar_all_metrics.png, radar_chart.png)
 ```
 
 ---
@@ -484,15 +514,44 @@ https://drive.google.com/drive/folders/11JVbhnkZmTAB5ptHeTcQ9F00Y51MoEam
 **Contents:**
 - ✅ Cleaned data (TV1 output)
 - ✅ Balanced datasets (TV2 output)
-- ✅ Confusion matrices (TV3 output)
-- ✅ Trained models (TV4 output)
-- ✅ Real-time alerts (TV4 output)
-- ✅ Model comparison charts (TV5 output)
+- ✅ Confusion matrices (TV3 + TV4 output)
+- ✅ **Pre-trained Random Forest model** (demo folder)
+- ✅ EDA & model comparison charts
+- ✅ Real-time alert logs
 
-**How to use:**
-1. Download from Google Drive link above
-2. Extract files to their respective folders
-3. Run `python phase6_demo.py` or `python model_comparison.py`
+### Quick Start: Just Download 3 Files for Demo
+
+To run `python phase6_demo.py` with pre-trained model:
+
+1. Download from Google Drive: https://drive.google.com/drive/folders/11JVbhnkZmTAB5ptHeTcQ9F00Y51MoEam
+2. Find these 3 files in the Drive:
+   - `random_forest_model.pkl`
+   - `scaler.pkl`
+   - `label_encoder.pkl`
+3. Create `demo/` folder and place them there:
+   ```bash
+   mkdir -p demo/
+   # Copy the 3 files into demo/ folder
+   ```
+4. Run: `python phase6_demo.py`
+
+### Full Setup: Extract Everything to Their Folders
+
+To get full project with all outputs and charts:
+
+1. Download all files from Google Drive
+2. Extract to respective folders:
+   ```
+   HoangAnh_N23DCCN071/data/processed/    ← cleaned data
+   HoangAnh_N23DCCN071/data/final/        ← balanced datasets
+   HoangAnh_N23DCCN071/artifacts/         ← scaler, label_encoder
+   HoangAnh_N23DCCN071/outputs/           ← EDA charts
+   N23DCCN001_DangKimAn/data/artifacts/   ← TV3 confusion matrices
+   N23DCCN138_PhamQuocAn/outputs/         ← TV4 confusion matrices
+   outputs/comparison/                     ← comparison charts
+   demo/                                   ← pre-trained models (3 files)
+   ```
+3. Run: `python phase6_demo.py` or `python model_comparison.py`
 
 ---
 

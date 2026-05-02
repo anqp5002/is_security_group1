@@ -2,12 +2,12 @@
 phase6_demo.py - Demo Phase 6: Real-time Prediction on Trained Model
 
 This script demonstrates:
-1. Loading pre-trained Random Forest model from demo/ folder
+1. Loading pre-trained Random Forest model
 2. Making predictions on new network flows
 3. Formatting Suricata-style alerts
 4. Testing different attack types
 
-If trained models don't exist in demo/ folder, creates a quick demo model for testing.
+If trained models don't exist, creates a quick demo model for testing.
 
 Run:
     python phase6_demo.py
@@ -20,34 +20,25 @@ import joblib
 import pandas as pd
 import numpy as np
 from datetime import datetime
+from config import SELECTED_FEATURES, ARTIFACTS_DIR
 
 # Fix encoding for Windows terminal
 if sys.stdout.encoding != 'utf-8':
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-
-# 18 core features used across all models
-SELECTED_FEATURES = [
-    "Protocol", "Flow Duration", "Tot Fwd Pkts", "Tot Bwd Pkts",
-    "TotLen Fwd Pkts", "TotLen Bwd Pkts", "Fwd Pkt Len Mean", "Bwd Pkt Len Mean",
-    "Flow Byts/s", "Flow Pkts/s", "Pkt Len Mean", "Pkt Len Std",
-    "SYN Flag Cnt", "ACK Flag Cnt", "FIN Flag Cnt", "RST Flag Cnt", "PSH Flag Cnt", "URG Flag Cnt"
-]
-
-DEMO_DIR = "demo"
 
 # ============================================================================
 # Step 1: Load Models & Artifacts
 # ============================================================================
 
 def load_models():
-    """Load trained Random Forest model + scaler + label encoder from demo folder"""
+    """Load trained Random Forest model + scaler + label encoder"""
 
-    model_path = os.path.join(DEMO_DIR, "random_forest_model.pkl")
-    scaler_path = os.path.join(DEMO_DIR, "scaler.pkl")
-    encoder_path = os.path.join(DEMO_DIR, "label_encoder.pkl")
+    model_path = os.path.join(ARTIFACTS_DIR, "random_forest_model.pkl")
+    scaler_path = os.path.join(ARTIFACTS_DIR, "scaler.pkl")
+    encoder_path = os.path.join(ARTIFACTS_DIR, "label_encoder.pkl")
 
     try:
-        print("🔍 Loading trained artifacts from demo/ folder...")
+        print("🔍 Loading trained artifacts...")
         model = joblib.load(model_path)
         scaler = joblib.load(scaler_path)
         label_encoder = joblib.load(encoder_path)
@@ -60,7 +51,7 @@ def load_models():
         return model, scaler, label_encoder
 
     except FileNotFoundError as e:
-        print(f"⚠️  Models not found in demo/ folder: {e}")
+        print(f"⚠️  Model not found: {e}")
         print("    Creating demo model for testing...\n")
         return create_demo_model()
 
@@ -266,7 +257,7 @@ def main():
     print("=" * 80)
     print()
     print("💡 What just happened:")
-    print("  1. Loaded Random Forest model (97.59% accuracy) from demo/ folder")
+    print("  1. Loaded Random Forest model (97.59% accuracy)")
     print("  2. Generated 10 synthetic network flows")
     print("  3. Scaled features using trained scaler")
     print("  4. Made real-time predictions")
@@ -274,9 +265,8 @@ def main():
     print()
     print("🚀 Next steps:")
     print("  - Review REPORT.md for model analysis")
-    print("  - Check GUIDE.md for full pipeline details")
+    print("  - Check full DEMO.md for pipeline details")
     print("  - Modify test flows to test different scenarios")
-    print("  - Download pre-trained models from Google Drive if you need real results")
     print()
 
 

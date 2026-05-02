@@ -31,22 +31,29 @@ Runs instant predictions on synthetic network flows with real-time Suricata-form
 
 ### 2️⃣ Get Pre-trained Results (Recommended ⭐)
 ```bash
-# Download all training outputs from Google Drive:
+# Download pre-trained models from Google Drive:
 # https://drive.google.com/drive/folders/11JVbhnkZmTAB5ptHeTcQ9F00Y51MoEam
 
-# Extract artifacts to project:
+# For QUICK DEMO:
+# 1. Download demo folder contents:
+#    - random_forest_model.pkl
+#    - scaler.pkl
+#    - label_encoder.pkl
+# 2. Place in: demo/ folder
+# 3. Run:
+python phase6_demo.py
+
+# For FULL ANALYSIS:
+# Extract all files to respective folders:
 # - HoangAnh_N23DCCN071/data/processed/
 # - HoangAnh_N23DCCN071/data/final/
 # - HoangAnh_N23DCCN071/artifacts/
 # - HoangAnh_N23DCCN071/outputs/
 # - N23DCCN001_DangKimAn/data/artifacts/
-# - N23DCCN138_PhamQuocAn/artifacts/
-# - N23DCCN138_PhamQuocAn/logs/
+# - N23DCCN138_PhamQuocAn/outputs/
 # - outputs/comparison/
-
-# Then use trained models:
-python phase6_demo.py
-python model_comparison.py  # View comparison charts
+# Then run:
+python model_comparison.py  # View all comparison charts
 ```
 
 ### 3️⃣ Train Yourself on Kaggle (2-4 hours)
@@ -96,11 +103,14 @@ is_security_group1/
 ├── README.md                           ← You are here
 ├── GUIDE.md                            ← Complete documentation
 ├── REPORT.md                           ← Model analysis details
-├── config.py                           ← Configuration (18 features, hyperparams)
-├── utils.py                            ← Utilities (load data, plot, alerts)
 ├── model_comparison.py                 ← Compare all 5 models
 ├── phase6_demo.py                      ← Real-time prediction demo
 ├── requirements.txt                    ← Dependencies
+│
+├── demo/                               ← Pre-trained Random Forest model
+│   ├── random_forest_model.pkl         ← Download from Google Drive
+│   ├── scaler.pkl                      ← Download from Google Drive
+│   └── label_encoder.pkl               ← Download from Google Drive
 │
 ├── HoangAnh_N23DCCN071/                (TV1: Preprocessing + TV2: Feature selection)
 │   ├── preprocess.py
@@ -113,7 +123,7 @@ is_security_group1/
 │
 └── N23DCCN138_PhamQuocAn/              (TV4: Train KNN/RF + Real-time alerts)
     ├── notebooks/                      (IDS_ML_Notebook.py)
-    └── logs/                           (alerts.log)
+    └── outputs/                        (Confusion matrices & charts)
 ```
 
 ---
