@@ -1,7 +1,11 @@
 """
 model_comparison.py — Aggregate and visualise results from all 5 ML models.
 
-Results are sourced from each member's notebooks:
+Loads pre-trained models from demo/ folder and compares performance:
+  - Logistic Regression, Naive Bayes, SVM (TV3 models)
+  - KNN, Random Forest (TV4 models - DEPLOYED)
+
+Also displays training results from each member's notebooks:
   TV3 (N23DCCN001_DangKimAn): Logistic Regression, Naive Bayes, SVM
   TV4 (N23DCCN138_PhamQuocAn): KNN, Random Forest
 
@@ -16,6 +20,9 @@ Outputs (saved to outputs/comparison/):
 """
 
 import os
+import sys
+import io
+import joblib
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -24,8 +31,57 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
+# Fix encoding for Windows terminal
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
 OUTPUT_DIR = os.path.join("outputs", "comparison")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+DEMO_DIR = "demo"
+
+# ============================================================================
+# Load 5 Models from demo/ Folder
+# ============================================================================
+
+def load_models_from_demo():
+    """Load all 5 pre-trained models from demo folder"""
+
+    print("\n" + "=" * 90)
+    print("  LOADING 5 MODELS FROM DEMO/ FOLDER")
+    print("=" * 90 + "\n")
+
+    models = {}
+    model_files = {
+        "Logistic Regression": "logistic_regression_model.pkl",
+        "Naive Bayes": "naive_bayes_model.pkl",
+        "SVM (Nystroem)": "svm_model.pkl",
+        "KNN (K=5)": "knn_model.pkl",
+        "Random Forest": "random_forest_model.pkl",
+    }
+
+    for model_name, filename in model_files.items():
+        filepath = os.path.join(DEMO_DIR, filename)
+        try:
+            model = joblib.load(filepath)
+            models[model_name] = model
+            print(f"  ✓ {model_name:25} loaded from {filepath}")
+        except FileNotFoundError:
+            print(f"  ✗ {model_name:25} NOT FOUND in {filepath}")
+
+    if models:
+        print(f"\n✓ Successfully loaded {len(models)}/5 models from demo/ folder\n")
+    else:
+        print("\n⚠️  No models found in demo/ folder. Using training results only.\n")
+
+    return models
+
+# Load models
+MODELS = load_models_from_demo()
+
+print("=" * 90)
+print("  TRAINING RESULTS FROM TV3 & TV4")
+print("=" * 90 + "\n")
 
 # ---------------------------------------------------------------------------
 # 1. Collected Results
@@ -124,11 +180,11 @@ print(f"Saved: {csv_path}")
 # 3. Bar chart — Accuracy only
 # ---------------------------------------------------------------------------
 PALETTE = ["#4C72B0", "#DD8452", "#55A868", "#C44E52", "#8172B2"]
-models   = df_sorted["Model"].tolist()
+model_names = df_sorted["Model"].tolist()
 accuracy = df_sorted["Accuracy"].tolist()
 
 fig, ax = plt.subplots(figsize=(10, 6))
-bars = ax.bar(models, accuracy, color=PALETTE, edgecolor="black", linewidth=0.6)
+bars = ax.bar(model_names, accuracy, color=PALETTE, edgecolor="black", linewidth=0.6)
 
 for bar, acc in zip(bars, accuracy):
     ax.text(
@@ -147,7 +203,7 @@ bars[best_idx].set_linewidth(2.5)
 ax.set_title("Model Accuracy Comparison — CIC-IDS2017", fontsize=14, fontweight="bold")
 ax.set_ylabel("Accuracy", fontsize=12)
 ax.set_ylim(max(0, min(accuracy) - 0.08), 1.05)
-ax.set_xticklabels(models, rotation=25, ha="right", fontsize=11)
+ax.set_xticklabels(model_names, rotation=25, ha="right", fontsize=11)
 ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f"{y:.0%}"))
 ax.grid(axis="y", linestyle="--", alpha=0.4)
 
@@ -167,7 +223,7 @@ print(f"Saved: {path}")
 metrics      = ["Accuracy", "F1"]
 metric_labels = ["Accuracy", "F1-Score"]
 
-x     = np.arange(len(models))
+x     = np.arange(len(model_names))
 width = 0.35
 
 fig, ax = plt.subplots(figsize=(12, 6))
@@ -191,7 +247,7 @@ for i, (metric, label) in enumerate(zip(metrics, metric_labels)):
 ax.set_title("Accuracy vs F1-Score per Model — CIC-IDS2017", fontsize=14, fontweight="bold")
 ax.set_ylabel("Score", fontsize=12)
 ax.set_xticks(x)
-ax.set_xticklabels(models, rotation=25, ha="right", fontsize=10)
+ax.set_xticklabels(model_names, rotation=25, ha="right", fontsize=10)
 ax.set_ylim(0, 1.12)
 ax.legend(fontsize=11)
 ax.grid(axis="y", linestyle="--", alpha=0.4)
