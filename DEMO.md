@@ -340,9 +340,57 @@ cat outputs/comparison/comparison_table.csv
 
 ---
 
-## Phase 6: Test Real-time Prediction
+## Phase 6: Test Real-time Prediction ⭐ QUICKSTART
 
-### Make Predictions on New Data
+### Quick Demo (No Training Required)
+```bash
+python phase6_demo.py
+```
+
+**What it does:**
+1. Loads Random Forest model (or creates demo model if not available)
+2. Generates 10 synthetic network flows
+3. Makes real-time predictions
+4. Formats Suricata-style alerts
+5. Shows summary statistics
+
+**Expected output:**
+```
+================================================================================
+ 🎬 PHASE 6 DEMO: Real-time Network Intrusion Detection
+================================================================================
+
+🔍 Loading trained artifacts...
+📊 Creating demo dataset...
+🤖 Training demo Random Forest model...
+✓ Demo model trained on 5000 samples
+
+📝 Generating 10 synthetic network flows...
+
+================================================================================
+ 🔍 PREDICTIONS ON TEST FLOWS
+================================================================================
+
+🚨 [2026-05-02 21:07:06] [ALERT] DDoS: DDoS Attack 1 (confidence: 35.0%)
+🚨 [2026-05-02 21:07:06] [ALERT] PortScan: PortScan Attempt 1 (confidence: 89.5%)
+✅ [2026-05-02 21:07:06] BENIGN: Normal Flow 1 (confidence: 92.3%)
+🚨 [2026-05-02 21:07:06] [ALERT] Bot: Bot C&C 1 (confidence: 78.4%)
+
+================================================================================
+ 📊 SUMMARY STATISTICS
+================================================================================
+
+  BENIGN       2/10 [████░░░░░░░░░░░░░░░░]  20.0%
+  DDoS         3/10 [██████░░░░░░░░░░░░░░]  30.0%
+  PortScan     3/10 [██████░░░░░░░░░░░░░░]  30.0%
+  Bot          2/10 [████░░░░░░░░░░░░░░░░]  20.0%
+
+✅ DEMO COMPLETE
+```
+
+---
+
+### Advanced: Make Predictions on Your Own Data
 ```python
 import joblib
 import pandas as pd
