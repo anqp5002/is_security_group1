@@ -20,80 +20,35 @@ A machine learning-based Network Intrusion Detection System that compares 5 ML m
 
 ## 🚀 Quick Start
 
-### 1️⃣ Install Dependencies
+**See detailed demo guide:** [`DEMO.md`](DEMO.md) ⭐
+
+### 3 Quick Steps:
 ```bash
+# 1. Install dependencies
 pip install -r requirements.txt
-```
 
-### 2️⃣ Download Dataset
-Download **CIC-IDS2017** from [Kaggle](https://www.kaggle.com/datasets/chethuhn/network-intrusion-dataset/) and extract 8 CSV files to `data/raw/`:
-
-```bash
+# 2. Download CIC-IDS2017 dataset (8 CSVs, ~2GB) from Kaggle
 mkdir -p data/raw
-# Place these 8 files in data/raw/:
-# - Monday-WorkingHours.pcap_ISCX.csv
-# - Tuesday-WorkingHours.pcap_ISCX.csv
-# - Wednesday-WorkingHours.pcap_ISCX.csv
-# - Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv
-# - Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv
-# - Friday-WorkingHours-Morning.pcap_ISCX.csv
-# - Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv
-# - Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv
-```
+# Extract files to data/raw/
 
-### 3️⃣ Run Pipeline (Step by Step)
-
-#### **TV1 — Data Preprocessing & EDA**
-```bash
+# 3. Run the pipeline
 cd HoangAnh_N23DCCN071
-python preprocess.py
-```
-**Output:** Cleaned dataset + EDA charts (attack distribution, correlation heatmap)
+python preprocess.py              # TV1: EDA + cleaning
+python prepare_model_data.py      # TV2: Feature selection
 
-#### **TV2 — Feature Selection & Balancing**
-```bash
-python prepare_model_data.py
-```
-**Output:** 18 selected features, balanced train/test data, scaler + encoder
-
-#### **TV3 — Train 3 Models (LR, NB, SVM)**
-```bash
 cd ../N23DCCN001_DangKimAn
-# Option A: Jupyter (interactive)
-jupyter notebook nodebook/logistic_regression.ipynb
-jupyter notebook nodebook/naive_bayes.ipynb
-jupyter notebook nodebook/svm.ipynb
+jupyter notebook nodebook/logistic_regression.ipynb  # TV3: Train LR/NB/SVM
 
-# Option B: Kaggle (recommended for large datasets)
-# 1. Create new Kaggle notebook
-# 2. Add dataset: chethuhn/network-intrusion-dataset
-# 3. Copy & run notebook content
-```
-**Output:** Classification reports, confusion matrices, trained models
-
-#### **TV4 — Train KNN + Random Forest + Real-time Alerts**
-```bash
 cd ../N23DCCN138_PhamQuocAn
-# Option A: Kaggle (recommended, no RAM issues)
-# 1. Create new Kaggle notebook
-# 2. Add dataset: chethuhn/network-intrusion-dataset
-# 3. Copy & run notebooks/IDS_ML_Notebook.py content
+python notebooks/IDS_ML_Notebook.py  # TV4: Train KNN/RF (or use Kaggle)
 
-# Option B: Local (requires 16GB+ RAM)
-python notebooks/IDS_ML_Notebook.py
-```
-**Output:** KNN + RF confusion matrices, real-time alert log, trained models
-
-#### **Compare All 5 Models**
-```bash
 cd ../
-python model_comparison.py
+python model_comparison.py        # Compare 5 models → outputs/comparison/
 ```
-**Output:** 
-- `outputs/comparison/bar_accuracy.png` — accuracy comparison
-- `outputs/comparison/bar_all_metrics.png` — detailed metrics
-- `outputs/comparison/radar_chart.png` — spider chart
-- `outputs/comparison/comparison_table.csv` — CSV table
+
+**Total time:** 2-4 hours (TV3 & TV4 can run in parallel)
+
+**For detailed walkthrough with screenshots & explanations:** 👉 [**DEMO.md**](DEMO.md)
 
 ---
 
