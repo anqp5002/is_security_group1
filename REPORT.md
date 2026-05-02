@@ -202,53 +202,106 @@ Raw metrics data (Model, Accuracy, Precision, Recall, F1, Note) exported to CSV 
 
 ---
 
-## Using the Deployed Model
+## Using the Deployed Models
 
-The trained Random Forest model is available in the `demo/` folder for immediate use:
+All 5 trained models are available in the `demo/` folder for immediate use:
 
 ```
 demo/
-├── random_forest_model.pkl    ← Trained RF classifier (100 trees)
-├── scaler.pkl                 ← Feature StandardScaler
-└── label_encoder.pkl          ← Class label encoder
+├── logistic_regression_model.pkl  ← LR classifier
+├── naive_bayes_model.pkl          ← NB classifier
+├── svm_model.pkl                  ← SVM classifier
+├── knn_model.pkl                  ← KNN classifier (K=5)
+├── random_forest_model.pkl        ← RF classifier (100 trees, DEPLOYED)
+├── scaler.pkl                     ← Feature StandardScaler (shared)
+└── label_encoder.pkl              ← Class label encoder (shared)
 ```
 
-### Quick Start
+### Quick Start with All 5 Models
 ```bash
 # 1. Download from Google Drive (see GUIDE.md)
-# 2. Place 3 files in demo/ folder
-# 3. Run real-time prediction demo:
+# 2. Place all 7 files in demo/ folder
+# 3. Run real-time prediction demo with all 5 models:
 python phase6_demo.py
+
+# 4. Or compare models with charts:
+python model_comparison.py
 ```
 
-### Model Specification
-- **Algorithm:** Random Forest with 100 decision trees
+### All 5 Models Available
+
+| Model | Accuracy | Best For | Status |
+|-------|----------|----------|--------|
+| Random Forest | 97.59% | **Production IDS** | ⭐ DEPLOYED |
+| KNN (K=5) | 98.20% | Research/Benchmarking | Available |
+| SVM (Nystroem) | 97.00% | Scalability | Available |
+| Logistic Regression | 93.00% | Baseline | Available |
+| Naive Bayes | 83.00% | Quick filter | Available |
+
+### Shared Specifications
 - **Input:** 18 network flow features
 - **Output Classes:** BENIGN, DDoS, PortScan, Bot, Web Attack, Infiltration
+- **Inference Latency:** <100ms per prediction
+- **Throughput:** 10,000+ predictions/second
+
+### Deployed Model (Random Forest) Specs
+- **Algorithm:** Random Forest with 100 decision trees
 - **Performance:**
   - Overall Accuracy: 97.59%
   - PortScan Detection: 99.9%
   - Bot Detection: 92.3%
-  - Inference Latency: <100ms per prediction
-  - Throughput: 10,000+ predictions/second
 
-### Integration Example
+### Integration Example: Single Model
 ```python
 import joblib
-import pandas as pd
 
-# Load pre-trained model
+# Load Random Forest (deployed model)
 model = joblib.load('demo/random_forest_model.pkl')
 scaler = joblib.load('demo/scaler.pkl')
 label_encoder = joblib.load('demo/label_encoder.pkl')
 
-# Make prediction on new flow
+# Predict on new flow
 flow_features = [6, 120, 25, 30, 1250, 1500, 150, 100, 500, 50, 120, 80, 1, 5, 0, 0, 0, 0]
 X_scaled = scaler.transform([flow_features])
 prediction = model.predict(X_scaled)[0]
 attack_type = label_encoder.inverse_transform([prediction])[0]
 
 print(f"Detected: {attack_type}")
+```
+
+### Integration Example: All 5 Models with Consensus
+```python
+import joblib
+from collections import Counter
+
+# Load all 5 models
+models = {
+    'lr': joblib.load('demo/logistic_regression_model.pkl'),
+    'nb': joblib.load('demo/naive_bayes_model.pkl'),
+    'svm': joblib.load('demo/svm_model.pkl'),
+    'knn': joblib.load('demo/knn_model.pkl'),
+    'rf': joblib.load('demo/random_forest_model.pkl'),
+}
+scaler = joblib.load('demo/scaler.pkl')
+label_encoder = joblib.load('demo/label_encoder.pkl')
+
+# Predict with all models
+flow_features = [6, 120, 25, 30, 1250, 1500, 150, 100, 500, 50, 120, 80, 1, 5, 0, 0, 0, 0]
+X_scaled = scaler.transform([flow_features])
+
+predictions = {}
+for name, model in models.items():
+    pred_idx = model.predict(X_scaled)[0]
+    predictions[name] = label_encoder.classes_[pred_idx]
+
+# Get consensus (majority vote)
+consensus = Counter(predictions.values()).most_common(1)[0][0]
+print(f"LR: {predictions['lr']}")
+print(f"NB: {predictions['nb']}")
+print(f"SVM: {predictions['svm']}")
+print(f"KNN: {predictions['knn']}")
+print(f"RF: {predictions['rf']}")
+print(f"Consensus: {consensus}")
 ```
 
 ---

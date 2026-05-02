@@ -27,7 +27,11 @@ A machine learning-based Network Intrusion Detection System that compares 5 ML m
 pip install -r requirements.txt
 python phase6_demo.py
 ```
-Runs instant predictions on synthetic network flows with real-time Suricata-format alerts.
+Runs instant predictions with **all 5 models** on synthetic network flows:
+- Shows predictions from each model side-by-side
+- Computes consensus prediction (voting)
+- Displays Suricata-format alerts
+- Compares model agreement
 
 ### 2️⃣ Get Pre-trained Results (Recommended ⭐)
 ```bash
@@ -130,9 +134,11 @@ is_security_group1/
 
 ## 🎯 Key Features
 
-✅ **5 ML Models Trained & Compared**
-- Logistic Regression, Naive Bayes, SVM, KNN, Random Forest
-- Comprehensive confusion matrices for each
+✅ **5 ML Models - Load & Compare**
+- Load all 5 models from `demo/` folder
+- `phase6_demo.py`: Side-by-side predictions + consensus voting
+- `model_comparison.py`: Compare training metrics & generate charts
+- Logistic Regression (93%), Naive Bayes (83%), SVM (97%), KNN (98.2%), Random Forest (97.59% deployed)
 
 ✅ **Production-Ready Deployment**
 - Random Forest model with 97.59% accuracy

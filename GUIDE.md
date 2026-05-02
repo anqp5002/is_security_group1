@@ -23,7 +23,12 @@
 pip install -r requirements.txt
 python phase6_demo.py
 ```
-**Output:** Real-time predictions on network flows with Suricata-format alerts
+**Output:** Real-time predictions from **ALL 5 MODELS** with consensus voting:
+- Logistic Regression, Naive Bayes, SVM, KNN, Random Forest
+- Side-by-side predictions with confidence scores
+- Consensus attack prediction (majority vote)
+- Suricata-format alerts
+- Model agreement comparison
 
 ### Option 2: Use Pre-trained Models (Recommended ⭐)
 
@@ -468,10 +473,14 @@ is_security_group1/
 ├── phase6_demo.py                 ← Real-time prediction demo (loads from demo/)
 ├── requirements.txt               ← Python dependencies
 │
-├── demo/                          ← Pre-trained Random Forest model (from Google Drive)
-│   ├── random_forest_model.pkl    ← Download & place here
-│   ├── scaler.pkl                 ← Download & place here
-│   └── label_encoder.pkl          ← Download & place here
+├── demo/                          ← Pre-trained models (from Google Drive)
+│   ├── logistic_regression_model.pkl   ← Download & place here
+│   ├── naive_bayes_model.pkl           ← Download & place here
+│   ├── svm_model.pkl                   ← Download & place here
+│   ├── knn_model.pkl                   ← Download & place here
+│   ├── random_forest_model.pkl         ← Download & place here
+│   ├── scaler.pkl                      ← Shared StandardScaler
+│   └── label_encoder.pkl               ← Shared LabelEncoder
 │
 ├── HoangAnh_N23DCCN071/           (TV1: Preprocessing + TV2: Features)
 │   ├── preprocess.py              → Loads 8 CSVs, generates EDA charts
@@ -519,25 +528,31 @@ https://drive.google.com/drive/folders/11JVbhnkZmTAB5ptHeTcQ9F00Y51MoEam
 - ✅ EDA & model comparison charts
 - ✅ Real-time alert logs
 
-### Quick Start: Just Download 3 Files for Demo
+### Quick Start: Download All 5 Models for Demo
 
-To run `python phase6_demo.py` with pre-trained model:
+To run `python phase6_demo.py` with all 5 models (or demo versions):
 
 1. Download from Google Drive: https://drive.google.com/drive/folders/11JVbhnkZmTAB5ptHeTcQ9F00Y51MoEam
-2. Find these 3 files in the Drive:
+2. Find these files in the Drive:
+   - `logistic_regression_model.pkl`
+   - `naive_bayes_model.pkl`
+   - `svm_model.pkl`
+   - `knn_model.pkl`
    - `random_forest_model.pkl`
    - `scaler.pkl`
    - `label_encoder.pkl`
 3. Create `demo/` folder and place them there:
    ```bash
    mkdir -p demo/
-   # Copy the 3 files into demo/ folder
+   # Copy all 7 files into demo/ folder
    ```
 4. Run: `python phase6_demo.py`
 
+**Note:** If files are missing, the script automatically creates demo models for comparison.
+
 ### Full Setup: Extract Everything to Their Folders
 
-To get full project with all outputs and charts:
+To get full project with all outputs, charts, and 5 pre-trained models:
 
 1. Download all files from Google Drive
 2. Extract to respective folders:
@@ -549,9 +564,20 @@ To get full project with all outputs and charts:
    N23DCCN001_DangKimAn/data/artifacts/   ← TV3 confusion matrices
    N23DCCN138_PhamQuocAn/outputs/         ← TV4 confusion matrices
    outputs/comparison/                     ← comparison charts
-   demo/                                   ← pre-trained models (3 files)
+   demo/                                   ← all 5 model files (7 files)
+      ├── logistic_regression_model.pkl
+      ├── naive_bayes_model.pkl
+      ├── svm_model.pkl
+      ├── knn_model.pkl
+      ├── random_forest_model.pkl
+      ├── scaler.pkl
+      └── label_encoder.pkl
    ```
-3. Run: `python phase6_demo.py` or `python model_comparison.py`
+3. Run any of these:
+   ```bash
+   python phase6_demo.py          # All 5 models side-by-side
+   python model_comparison.py     # Compare all 5 models with charts
+   ```
 
 ---
 
