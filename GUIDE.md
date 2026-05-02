@@ -32,8 +32,8 @@ python phase6_demo.py
 ### For Full Understanding (2-4 hours)
 ```bash
 # Download dataset from Kaggle (~2GB)
-mkdir -p data/raw
-# Extract 8 CSV files to data/raw/
+mkdir -p HoangAnh_N23DCCN071/data/raw
+# Extract 8 CSV files to HoangAnh_N23DCCN071/data/raw/
 
 # TV1: Data Preprocessing (10-15 min)
 cd HoangAnh_N23DCCN071
@@ -113,12 +113,24 @@ Despite KNN having **0.61% higher accuracy**, Random Forest was chosen for **pro
 
 ### Phase 1: Data Preprocessing (TV1)
 ```bash
+# First: Download 8 CSV files from Kaggle and extract to:
+mkdir -p HoangAnh_N23DCCN071/data/raw
+# Put these 8 files in HoangAnh_N23DCCN071/data/raw/:
+# - Monday-WorkingHours.pcap_ISCX.csv
+# - Tuesday-WorkingHours.pcap_ISCX.csv
+# - Wednesday-WorkingHours.pcap_ISCX.csv
+# - Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv
+# - Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv
+# - Friday-WorkingHours-Morning.pcap_ISCX.csv
+# - Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv
+# - Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv
+
 cd HoangAnh_N23DCCN071
 python preprocess.py
 ```
 
 **What it does:**
-- Loads 8 CSV files (~2.8M network flows)
+- Loads 8 CSV files from `data/raw/` (~2.8M network flows)
 - Cleans column names, removes duplicates/NaN
 - Generates EDA charts (attack distribution, correlation heatmap)
 
@@ -127,6 +139,20 @@ python preprocess.py
 data/processed/merged_cleaned.csv  (2.8M rows × 79 columns)
 outputs/attack_distribution.png
 outputs/correlation_heatmap.png
+```
+
+**Directory structure after this phase:**
+```
+HoangAnh_N23DCCN071/
+├── data/
+│   ├── raw/                        (Input: 8 CSV files)
+│   └── processed/
+│       └── merged_cleaned.csv      (Output: cleaned data)
+├── outputs/
+│   ├── attack_distribution.png
+│   └── correlation_heatmap.png
+├── preprocess.py
+└── prepare_model_data.py
 ```
 
 ---

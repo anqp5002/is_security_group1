@@ -31,8 +31,8 @@ Runs instant predictions on synthetic network flows with real-time Suricata-form
 ```bash
 # Download CIC-IDS2017 dataset (8 CSVs, ~2GB) from:
 # https://www.kaggle.com/datasets/chethuhn/network-intrusion-dataset/
-mkdir -p data/raw
-# Extract CSVs to data/raw/
+mkdir -p HoangAnh_N23DCCN071/data/raw
+# Extract 8 CSV files to HoangAnh_N23DCCN071/data/raw/
 
 # Run step-by-step (TV1 → TV2 → TV3 → TV4 → TV5)
 cd HoangAnh_N23DCCN071
