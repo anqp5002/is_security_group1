@@ -52,6 +52,31 @@ python model_comparison.py        # Compare 5 models → outputs/comparison/
 
 ---
 
+## 🏗️ Architecture & Configuration
+
+**See detailed architecture guide:** [`ARCHITECTURE.md`](ARCHITECTURE.md)
+
+### Key Files (Root Level)
+
+| File | Purpose | Content |
+|------|---------|---------|
+| **config.py** | Central config for ALL teams | 18 SELECTED_FEATURES, HYPERPARAMS, paths |
+| **utils.py** | Shared utility functions | load_data(), plot_confusion_matrix(), format_alert_log() |
+| **requirements.txt** | Dependencies | All Python packages needed |
+| **model_comparison.py** | Model aggregation | Compares 5 models, generates charts |
+
+### Why Separate Folders (TV1-TV4)?
+
+Each team has **different output artifacts**:
+- **TV1 (Hoàng):** EDA charts, cleaned data
+- **TV2 (Hoàng):** Balanced datasets, scaler, encoder
+- **TV3 (Đặng):** 3 model notebooks, confusion matrices
+- **TV4 (Phạm):** Trained RF/KNN, real-time alerts
+
+→ Read [`ARCHITECTURE.md`](ARCHITECTURE.md) for detailed data flow diagram
+
+---
+
 ## 📂 Project Structure
 
 ```
