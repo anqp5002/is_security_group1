@@ -11,6 +11,12 @@ http.port: 9200
 
 discovery.type: single-node
 
+# Allow Filebeat 7.x (ES 7.x) to send _type in bulk requests to OpenSearch 2.x.
+# Without this, OpenSearch 2.x rejects: "unknown parameter [_type]"
+# See: https://github.com/opensearch-project/OpenSearch/issues/3484
+compatibility:
+  override_main_response_version: true
+
 plugins.security.ssl.transport.pemcert_filepath: certs/node-1.pem
 plugins.security.ssl.transport.pemkey_filepath: certs/node-1-key.pem
 plugins.security.ssl.transport.pemtrustedcas_filepath: certs/root-ca.pem

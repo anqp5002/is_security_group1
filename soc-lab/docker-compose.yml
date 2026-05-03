@@ -33,7 +33,8 @@ services:
       - ./wazuh/config/local_decoders.xml:/var/ossec/etc/decoders/local_decoders.xml:rw
       - ./wazuh/data/logs:/var/ossec/logs:rw
       - ./wazuh/data/etc:/var/ossec/etc/shared:rw
-      - ./certs/root-ca.pem:/etc/ssl/root-ca.pem:ro
+      - ./certs:/etc/ssl:ro
+      - ./wazuh/filebeat-run.sh:/etc/services.d/filebeat/run:ro
       - wazuh-data:/var/ossec/queue
 
     env_file:
@@ -44,6 +45,9 @@ services:
       - INDEXER_USERNAME=${INDEXER_USERNAME}
       - INDEXER_PASSWORD=${INDEXER_PASSWORD}
       - FILEBEAT_SSL_VERIFICATION_MODE=full
+      - SSL_CERTIFICATE_AUTHORITIES=/etc/ssl/root-ca.pem
+      - SSL_CERTIFICATE=/etc/ssl/wazuh-1.pem
+      - SSL_KEY=/etc/ssl/wazuh-1-key.pem
       - VIRUSTOTAL_API_KEY=${VIRUSTOTAL_API_KEY}
 
     networks:
@@ -102,9 +106,8 @@ services:
     environment:
       - DASHBOARD_USERNAME=${DASHBOARD_USERNAME}
       - DASHBOARD_PASSWORD=${DASHBOARD_PASSWORD}
-      - WAZUH_API_URL=https://wazuh-manager:55000
+      - WAZUH_API_URL=https://wazuh.manager
       - SERVER_SSL_ENABLED=true
-
     networks:
       soc-net:
         ipv4_address: 172.20.0.12

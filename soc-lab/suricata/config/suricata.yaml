@@ -12,7 +12,7 @@ af-packet:
 
 vars:
   address-groups:
-    HOME_NET: "[192.168.1.0/24]"
+    HOME_NET: "[192.168.1.0/24,192.168.100.0/24,172.20.0.0/24,10.0.0.0/8]"
     EXTERNAL_NET: "!$HOME_NET"
     DNS_SERVERS: "$HOME_NET"
     SMTP_SERVERS: "$HOME_NET"
