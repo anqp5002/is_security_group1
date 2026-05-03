@@ -1,0 +1,12 @@
+<group name="pfsense,firewall,">
+  <rule id="100114" level="7">
+    <if_sid>100111</if_sid>
+    <match>block</match>
+    <description>pfSense: Blocked traffic from $(srcip) to $(dstip)</description>
+  </rule>
+  <rule id="100115" level="10">
+    <if_sid>100111</if_sid>
+    <match>authentication error</match>
+    <description>pfSense: Auth error from $(srcip)</description>
+  </rule>
+</group>

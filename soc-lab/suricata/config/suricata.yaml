@@ -1,0 +1,50 @@
+%YAML 1.1
+---
+# Network interface – change eth0 to match your host interface
+af-packet:
+  - interface: eth0
+    cluster-id: 99
+    cluster-type: cluster_flow
+    defrag: yes
+    use-mmap: yes
+    ring-size: 2048
+
+outputs:
+  - eve-log:
+      enabled: yes
+      filetype: regular
+      filename: eve.json
+      types:
+        - alert:
+            payload: yes
+            metadata: yes
+        - dns
+        - http:
+            extended: yes
+        - tls:
+            session-fields: yes
+        - ssh
+        - smtp
+        - flow
+        - netflow
+        - stats
+
+  - fast:
+      enabled: yes
+      filename: fast.log
+      append: yes
+
+  - stats:
+      enabled: yes
+      filename: stats.log
+      interval: 30
+
+logging:
+  default-log-level: info
+  outputs:
+    - level: info
+      type: file
+      filename: suricata.log
+
+rule-files:
+  - /etc/suricata/rules/*.rules

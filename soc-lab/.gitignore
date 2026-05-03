@@ -1,0 +1,18 @@
+# ── Secrets & Credentials ─────────────────────────────────
+.env
+.env.*
+*.pem
+*.key
+
+# ── Logs ───────────────────────────────────────────────────
+*.log
+wazuh-certificates-tool.log
+
+# ── Runtime / Persistent Data (mounted from containers) ───
+wazuh/data/etc/
+wazuh/data/logs/
+indexer/data/
+suricata/logs/
+
+# ── Generated Scripts ──────────────────────────────────────
+wazuh-certs-tool.sh
