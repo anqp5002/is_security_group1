@@ -5,17 +5,6 @@ opensearch.hosts: [https://wazuh.indexer:9200]
 opensearch.ssl.verificationMode: none
 opensearch.username: ${INDEXER_USERNAME}
 opensearch.password: ${INDEXER_PASSWORD}
-opensearch.requestHeadersWhitelist: ["securitytenant","Authorization"]
-opensearch_security.multitenancy.enabled: true
-opensearch_security.multitenancy.tenants.preferred: ["Private", "Global"]
-opensearch_security.cookie.secure: false
-opensearch.ssl.cert: certs/wazuh-dashboard.pem
-opensearch.ssl.key: certs/wazuh-dashboard-key.pem
-opensearch.ssl.certAuthorities: certs/root-ca.pem
+opensearch.requestHeadersAllowlist: ["securitytenant","Authorization"]
 uiSettings.overrides.defaultRoute: /app/wz-home
 wazuh.enabled: true
-wazuh.api.username: ${DASHBOARD_USERNAME}
-wazuh.api.password: ${DASHBOARD_PASSWORD}
-wazuh.api.url: https://wazuh.manager
-wazuh.reports.enabled: true
-news.enabled: false

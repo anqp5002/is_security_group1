@@ -1,5 +1,3 @@
-version: '3.9'
-
 networks:
   soc-net:
     driver: bridge
@@ -39,7 +37,7 @@ services:
       - wazuh-data:/var/ossec/queue
 
     env_file:
-      - ./env
+      - ./.env
 
     environment:
       - INDEXER_URL=https://wazuh.indexer:9200
@@ -99,14 +97,12 @@ services:
       - ./certs:/usr/share/wazuh-dashboard/certs:ro
 
     env_file:
-      - ./env
+      - ./.env
 
     environment:
-      - INDEXER_USERNAME=${INDEXER_USERNAME}
-      - INDEXER_PASSWORD=${INDEXER_PASSWORD}
-      - WAZUH_API_URL=https://wazuh.manager
       - DASHBOARD_USERNAME=${DASHBOARD_USERNAME}
       - DASHBOARD_PASSWORD=${DASHBOARD_PASSWORD}
+      - WAZUH_API_URL=https://wazuh-manager:55000
       - SERVER_SSL_ENABLED=true
 
     networks:
@@ -127,10 +123,6 @@ services:
       - ./suricata/config/suricata.yaml:/etc/suricata/suricata.yaml:rw
       - ./suricata/rules:/etc/suricata/rules:rw
       - ./suricata/logs:/var/log/suricata:rw
+      - ./suricata/start.sh:/start.sh:ro
 
-    environment:
-      - SURICATA_OPTIONS=-i eth0
-
-    command: >
-      bash -c 'suricata-update && suricata -c /etc/suricata/suricata.yaml
-      -i ${IFACE:-eth0} --af-packet'
+    command: /start.sh

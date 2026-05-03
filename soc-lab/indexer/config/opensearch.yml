@@ -9,21 +9,20 @@ path.logs: /var/log/wazuh-indexer
 network.host: 0.0.0.0
 http.port: 9200
 
-plugins.security.ssl.transport.pemcert_filepath: certs/wazuh-indexer-node.pem
-plugins.security.ssl.transport.pemkey_filepath: certs/wazuh-indexer-node-key.pem
+discovery.type: single-node
+
+plugins.security.ssl.transport.pemcert_filepath: certs/node-1.pem
+plugins.security.ssl.transport.pemkey_filepath: certs/node-1-key.pem
 plugins.security.ssl.transport.pemtrustedcas_filepath: certs/root-ca.pem
 plugins.security.ssl.http.enabled: true
-plugins.security.ssl.http.pemcert_filepath: certs/wazuh-indexer-node.pem
-plugins.security.ssl.http.pemkey_filepath: certs/wazuh-indexer-node-key.pem
+plugins.security.ssl.http.pemcert_filepath: certs/node-1.pem
+plugins.security.ssl.http.pemkey_filepath: certs/node-1-key.pem
 plugins.security.ssl.http.pemtrustedcas_filepath: certs/root-ca.pem
 plugins.security.ssl.transport.enforce_hostname_verification: false
 plugins.security.ssl.transport.resolve_hostname: false
 plugins.security.authcz.admin_dn:
-  - CN=admin
+  - CN=admin,OU=Wazuh,O=Wazuh,L=California,C=US
 plugins.security.nodes_dn:
   - CN=*
-plugins.security.enable_ssl_mutual_auth: false
-plugins.security.cache.digest.plaintext_allow_insecure: true
-
 action.auto_create_index: "true"
 bootstrap.memory_lock: true
