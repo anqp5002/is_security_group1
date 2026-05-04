@@ -10,9 +10,9 @@ Huấn luyện 2 mô hình KNN (K=5) và Random Forest (100 cây) trên tập d�
 
 ```
 notebooks/IDS_ML_Notebook.py    -- notebook huấn luyện và đánh giá
-outputs/tv4/cm_KNN.png          -- ma trận nhầm lẫn KNN
-outputs/tv4/cm_Random_Forest.png -- ma trận nhầm lẫn Random Forest
-outputs/tv4/model_comparison.png -- biểu đồ so sánh độ chính xác
+outputs/cm_KNN.png              -- ma trận nhầm lẫn KNN
+outputs/cm_Random_Forest.png    -- ma trận nhầm lẫn Random Forest
+outputs/model_comparison.png    -- biểu đồ so sánh độ chính xác
 logs/alerts.log                 -- file cảnh báo từ mô phỏng thời gian thực
 ```
 

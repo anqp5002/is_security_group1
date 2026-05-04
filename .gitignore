@@ -41,10 +41,20 @@ data/final/
 *.pkl
 *.joblib
 
-# Outputs
+# Outputs (general)
 outputs/
 logs/
 artifacts/
+
+# Cho phep anh ket qua va log cua thanh vien
+!HoangAnh_N23DCCN071/outputs/
+!HoangAnh_N23DCCN071/outputs/**
+!N23DCCN001_DangKimAn/data/artifacts/
+!N23DCCN001_DangKimAn/data/artifacts/**
+!N23DCCN138_PhamQuocAn/outputs/
+!N23DCCN138_PhamQuocAn/outputs/**
+!N23DCCN138_PhamQuocAn/logs/
+!N23DCCN138_PhamQuocAn/logs/**
 
 # OS
 .DS_Store
