@@ -1,306 +1,245 @@
-# 🚀 Getting Started - For Beginners
+# Hướng dẫn bắt đầu
 
-**Welcome!** This guide helps you understand this project from zero. Read this first, then dive into the detailed docs.
+Hướng dẫn này giúp bạn hiểu dự án từ cơ bản nhất. Đọc file này trước, sau đó tham khảo các tài liệu chi tiết hơn.
 
 ---
 
-## 🎯 What Does This Project Do?
+## Dự án này làm gì?
 
-This is a **Network Intrusion Detection System (IDS)** using Machine Learning.
+Đây là Hệ thống phát hiện xâm nhập mạng (IDS) sử dụng Học máy.
 
-**In simple terms:**
-- It watches network traffic (data flowing between computers)
-- It detects if the traffic is **normal** or **suspicious** (attack)
-- It identifies **what type of attack** it is (DDoS, port scan, botnet, etc.)
+Nói đơn giản:
+- Hệ thống theo dõi lưu lượng mạng (dữ liệu truyền giữa các máy tính)
+- Phát hiện lưu lượng bình thường hay đáng ngờ (tấn công)
+- Xác định loại tấn công cụ thể (DDoS, dò quét cổng, botnet, v.v.)
 
-**Real-world example:**
+Ví dụ thực tế:
 ```
-Normal user browsing YouTube
-  → Model says: "BENIGN ✅" (normal, safe)
+Người dùng bình thường lướt web
+  -> Mô hình: "BENIGN" (bình thường, an toàn)
 
-Hacker trying to scan your network
-  → Model says: "PortScan 🚨" (attack detected!)
+Hacker dò quét mạng của bạn
+  -> Mô hình: "PortScan" (phát hiện tấn công!)
 
-Malware trying to communicate with command server
-  → Model says: "Bot 🚨" (botnet infection detected!)
+Malware liên lạc với máy chủ điều khiển
+  -> Mô hình: "Bot" (phát hiện botnet!)
 ```
 
 ---
 
-## 📚 5 Different Machine Learning Models
+## 5 mô hình học máy
 
-The project trains **5 different AI models** and compares them:
+Dự án huấn luyện 5 mô hình AI khác nhau và so sánh:
 
-| Model | Accuracy | Best For | Use It? |
-|-------|----------|----------|---------|
-| **Random Forest** | 97.59% | **Production (Real Deployment)** | ⭐ YES |
-| KNN | 98.20% | Research/Testing | Alternative |
-| SVM | 97.00% | Scalability needed | Alternative |
-| Logistic Regression | 93.00% | Baseline/Learning | For study |
-| Naive Bayes | 83.00% | Quick filtering | Not recommended |
+| Mô hình | Độ chính xác | Phù hợp cho | Sử dụng? |
+|---------|:------------:|-------------|----------|
+| Random Forest | 97.59% | Triển khai thực tế | Được chọn |
+| KNN | 98.20% | Nghiên cứu, kiểm thử | Thay thế |
+| SVM | 97.00% | Khi cần mở rộng | Thay thế |
+| Logistic Regression | 93.00% | Mô hình nền tảng | Để học |
+| Naive Bayes | 83.00% | Lọc nhanh | Không khuyến nghị |
 
-**Why Random Forest was chosen despite not being #1:**
-- KNN has 0.61% higher accuracy BUT misses 30% more botnet attacks
-- Random Forest catches 99.9% of port scans vs KNN's 84.8%
-- **Security > Accuracy**: Missing attacks is worse than small accuracy loss
+Tại sao chọn Random Forest dù không phải cao nhất:
+- KNN cao hơn 0.61% độ chính xác nhưng bỏ sót 30% tấn công botnet
+- Random Forest phát hiện 99.9% dò quét mạng so với 84.8% của KNN
+- Trong bảo mật, bỏ sót tấn công nguy hiểm hơn giảm nhẹ độ chính xác
 
 ---
 
-## 🗂️ Project Structure (Simple Version)
+## Cấu trúc dự án
 
 ```
 is_security_group1/
-│
-├── 📄 Docs (Read these!)
-│   ├── README.md              ← Quick overview
-│   ├── GETTING_STARTED.md     ← You are here
-│   ├── GUIDE.md               ← Detailed walkthrough
-│   ├── REPORT.md              ← Why Random Forest? Deep analysis
-│
-├── 🤖 Python Scripts
-│   ├── phase6_demo.py         ← Demo: loads 5 models, makes predictions
-│   ├── model_comparison.py    ← Generates comparison charts
-│
-├── 📦 demo/ (Pre-trained Models)
-│   ├── logistic_regression_model.pkl    ← Model 1 (needs scaler + encoder)
-│   ├── naive_bayes_model.pkl            ← Model 2 (needs scaler + encoder)
-│   ├── svm_model.pkl                    ← Model 3 (needs scaler + encoder)
-│   ├── knn_model.pkl                    ← Model 4 (needs scaler + encoder)
-│   ├── random_forest_model.pkl          ← Model 5 (needs scaler + encoder) ⭐ DEPLOYED
-│   ├── scaler.pkl                       ← Shared: Feature normalizer
-│   └── label_encoder.pkl                ← Shared: Label converter
-│
-├── 👥 Team Member Folders
-│   ├── HoangAnh_N23DCCN071/   ← Data preprocessing & feature selection
-│   ├── N23DCCN001_DangKimAn/  ← Training 3 models (LR, NB, SVM)
-│   └── N23DCCN138_PhamQuocAn/ ← Training 2 models (KNN, RF) + alerts
+|
+|-- Tài liệu
+|   |-- README.md              -- Tổng quan dự án
+|   |-- GETTING_STARTED.md     -- Hướng dẫn bắt đầu (file này)
+|   |-- GUIDE.md               -- Hướng dẫn chi tiết
+|   |-- REPORT.md              -- Báo cáo phân tích mô hình
+|
+|-- Script Python
+|   |-- phase6_demo.py         -- Demo: tải 5 mô hình, dự đoán
+|   |-- model_comparison.py    -- Tạo biểu đồ so sánh
+|
+|-- demo/ (Mô hình đã train)
+|   |-- logistic_regression_model.pkl
+|   |-- naive_bayes_model.pkl
+|   |-- svm_model.pkl
+|   |-- knn_model.pkl
+|   |-- random_forest_model.pkl    -- Mô hình được triển khai
+|   |-- scaler.pkl                 -- Bộ chuẩn hóa đặc trưng
+|   |-- label_encoder.pkl          -- Bộ chuyển đổi nhãn
+|
+|-- Thư mục thành viên
+|   |-- HoangAnh_N23DCCN071/   -- Tiền xử lý dữ liệu và chọn đặc trưng
+|   |-- N23DCCN001_DangKimAn/  -- Huấn luyện 3 mô hình (LR, NB, SVM)
+|   |-- N23DCCN138_PhamQuocAn/ -- Huấn luyện 2 mô hình (KNN, RF) + cảnh báo
 ```
 
 ---
 
-## 🔑 Key Concepts Explained
+## Các khái niệm chính
 
-### 1. What is a `.pkl` file?
+### 1. File .pkl là gì?
 
-A `.pkl` file is a **saved Python object**. Think of it like saving a trained brain to a file.
-
-```
-Training process:
-  Raw data → Feed to AI → AI learns patterns → Save brain to logistic_regression_model.pkl
-
-Using it later:
-  Load logistic_regression_model.pkl → Brain remembers patterns → Make predictions
-```
-
-### 2. Why 7 files in demo/ folder? (5 models + 2 shared)
-
-**5 Different Models:**
-- Each has learned slightly different patterns
-- Results don't always match
-- By voting (consensus), we get more reliable answers
-
-**2 Shared Tools:**
-- **scaler.pkl** — Makes numbers "clean" before feeding to models
-  ```
-  Raw feature: 1250 bytes/sec
-  Scaled: 0.5 (normalized between -1 and 1)
-  
-  Without scaling, models get confused and predict wrong!
-  ```
-
-- **label_encoder.pkl** — Translates between computer language and human language
-  ```
-  Computer output: 2
-  Human language: "PortScan" (via label_encoder)
-  
-  Model outputs numbers 0-5
-  Encoder converts: 0→BENIGN, 1→DDoS, 2→PortScan, 3→Bot, 4→Web Attack, 5→Infiltration
-  ```
-
-### 3. What are "18 Features"?
-
-A **feature** is one piece of information about network traffic:
+File .pkl là đối tượng Python đã được lưu lại. Tương tự như việc lưu "bộ não đã huấn luyện" vào file.
 
 ```
-Example network flow has 18 measurements:
-  1. Protocol (TCP/UDP/ICMP)
-  2. Flow Duration (how long the connection lasted)
-  3. Total Forward Packets (how many packets sent forward)
-  4. Total Backward Packets (how many packets sent back)
-  ... (14 more features)
-  
-All 5 models use the SAME 18 features to make decisions
+Quá trình huấn luyện:
+  Dữ liệu thô -> Đưa vào AI -> AI học các mẫu -> Lưu bộ não vào file .pkl
+
+Sử dụng sau này:
+  Tải file .pkl -> Bộ não nhớ lại các mẫu -> Dự đoán
+```
+
+### 2. Tại sao có 7 file trong thư mục demo/?
+
+5 mô hình khác nhau:
+- Mỗi mô hình học các mẫu hơi khác nhau
+- Kết quả không phải lúc nào cũng giống nhau
+- Bằng cách biểu quyết đa số, ta được kết quả đáng tin cậy hơn
+
+2 công cụ dùng chung:
+- scaler.pkl: Chuẩn hóa số liệu trước khi đưa vào mô hình
+  ```
+  Đặc trưng thô: 1250 bytes/giây
+  Sau chuẩn hóa: 0.5 (nằm trong khoảng -1 đến 1)
+  Không chuẩn hóa thì mô hình dự đoán sai!
+  ```
+
+- label_encoder.pkl: Chuyển đổi giữa ngôn ngữ máy và ngôn ngữ người
+  ```
+  Đầu ra máy tính: 2
+  Ngôn ngữ người: "PortScan" (qua label_encoder)
+  Mô hình xuất số 0-5
+  Bộ chuyển đổi: 0->BENIGN, 1->DDoS, 2->PortScan, 3->Bot, 4->Web Attack, 5->Infiltration
+  ```
+
+### 3. "17 đặc trưng" là gì?
+
+Đặc trưng là một thông tin về lưu lượng mạng:
+
+```
+Mỗi luồng mạng có 17 thông số:
+  1. Flow Duration (thời gian kết nối)
+  2. Total Fwd Packets (số gói tin gửi đi)
+  3. Total Backward Packets (số gói tin gửi lại)
+  ... (14 đặc trưng nữa)
+
+Tất cả 5 mô hình dùng CÙNG 17 đặc trưng để quyết định
 ```
 
 ---
 
-## 🚦 Three Different Ways to Use This Project
+## 3 cách sử dụng dự án
 
-### **Option 1: Quick Demo (1 minute) ⚡**
-**Goal:** See the models work without training
+### Cách 1: Demo nhanh (1 phút)
+
+Mục tiêu: Xem mô hình hoạt động mà không cần huấn luyện
 
 ```bash
 pip install -r requirements.txt
 python phase6_demo.py
 ```
 
-**What happens:**
-- ✅ Loads all 5 models from demo/ folder
-- ✅ Creates fake network flows
-- ✅ Each model makes predictions
-- ✅ Shows what they all agree on (consensus)
-- ✅ Formats alerts like a real IDS
+Kết quả:
+- Tải 5 mô hình từ thư mục demo/
+- Tạo các luồng mạng giả lập
+- Mỗi mô hình đưa ra dự đoán
+- Hiển thị kết quả biểu quyết đa số
+- Định dạng cảnh báo giống IDS thật
 
-**Best for:** Quick understanding, testing, showing others
+Phù hợp cho: Xem nhanh, kiểm thử, trình bày
 
 ---
 
-### **Option 2: Download Pre-trained Results (5 min) 📥**
-**Goal:** See comparison charts without training
+### Cách 2: Tải kết quả đã train (5 phút)
+
+Mục tiêu: Xem biểu đồ so sánh mà không cần huấn luyện
 
 ```bash
-# Download from Google Drive:
+# Tải từ Google Drive:
 # https://drive.google.com/drive/folders/11JVbhnkZmTAB5ptHeTcQ9F00Y51MoEam
 
-# Extract to demo/ folder, then run:
+# Giải nén vào thư mục demo/, sau đó chạy:
 python model_comparison.py
 ```
 
-**What you get:**
-- ✅ Bar charts (accuracy comparison)
-- ✅ Radar chart (all metrics visible)
-- ✅ CSV file with data
-- ✅ See why Random Forest was chosen
+Kết quả:
+- Biểu đồ cột (so sánh độ chính xác)
+- Biểu đồ radar (tất cả chỉ số)
+- File CSV với dữ liệu
+- Hiểu tại sao chọn Random Forest
 
-**Best for:** Understanding the decision, presentations
-
----
-
-### **Option 3: Train Everything on Kaggle (2-4 hours) 🔬**
-**Goal:** See the full pipeline from raw data to models
-
-**This is complex - read GUIDE.md first!**
-
-Quick summary:
-1. **TV1** (10-15 min): Clean raw data from Kaggle dataset
-2. **TV2** (5-10 min): Select best features
-3. **TV3** (30-60 min): Train 3 models on Kaggle
-4. **TV4** (60-120 min): Train 2 models on Kaggle
-5. **TV5** (<1 min): Compare all 5
-
-**Best for:** Learning, research, understanding the full pipeline
+Phù hợp cho: Tìm hiểu quyết định, thuyết trình
 
 ---
 
-## 📖 Documentation Roadmap
+### Cách 3: Huấn luyện từ đầu trên Kaggle (2-4 giờ)
 
-### **For Different People:**
+Mục tiêu: Xem toàn bộ quy trình từ dữ liệu thô đến mô hình
 
-**I just want to see it work:**
-- Run Option 1 (phase6_demo.py)
-- Read this file (GETTING_STARTED.md)
+Đây là phần phức tạp - đọc GUIDE.md trước.
 
-**I want to understand the decision:**
-- Read REPORT.md (Why was Random Forest chosen?)
-- Run Option 2 (python model_comparison.py)
+Tóm tắt:
+1. TV1 (10-15 phút): Làm sạch dữ liệu thô từ Kaggle
+2. TV2 (5-10 phút): Chọn đặc trưng tốt nhất
+3. TV3 (30-60 phút): Huấn luyện 3 mô hình trên Kaggle
+4. TV4 (60-120 phút): Huấn luyện 2 mô hình trên Kaggle
+5. TV5 (dưới 1 phút): So sánh tất cả 5 mô hình
 
-**I want to understand everything:**
-- Read GUIDE.md (complete walkthrough)
-- Run Option 1, 2, or 3
-- Look at code comments
-
-**I need to use this in my app:**
-- Read REPORT.md ("Integration Examples")
-- Copy code from examples
-- Use models from demo/ folder
-
-**I want to train it myself:**
-- Read GUIDE.md completely
-- Run Option 3 step by step
+Phù hợp cho: Học tập, nghiên cứu, hiểu toàn bộ quy trình
 
 ---
 
-## 🎓 Learning Path
+## Hướng dẫn đọc tài liệu
 
-### **Week 1: Understanding**
-- [ ] Read GETTING_STARTED.md (this file) - 10 min
-- [ ] Run `python phase6_demo.py` - 2 min
-- [ ] Understand 5 models and why RF was chosen - 20 min
-- [ ] Read README.md - 10 min
+Tùy theo nhu cầu:
 
-**Total: ~45 minutes**
-
-### **Week 2: Deep Dive**
-- [ ] Read GUIDE.md completely - 1 hour
-- [ ] Read REPORT.md completely - 1 hour
-- [ ] Download models from Google Drive - 5 min
-- [ ] Run `python model_comparison.py` - 2 min
-- [ ] Study code in phase6_demo.py - 1 hour
-
-**Total: ~3 hours**
-
-### **Week 3: Hands-On (Optional)**
-- [ ] Run TV1 (preprocessing) - 15 min
-- [ ] Run TV2 (feature selection) - 10 min
-- [ ] Train models on Kaggle (TV3 + TV4) - 2-3 hours
-- [ ] Run TV5 (comparison) - 1 min
-- [ ] Modify code, experiment
+- Chỉ muốn xem hoạt động: Chạy Cách 1, đọc file này
+- Muốn hiểu quyết định chọn mô hình: Đọc REPORT.md, chạy Cách 2
+- Muốn hiểu tất cả: Đọc GUIDE.md
+- Cần tích hợp vào ứng dụng: Đọc phần "Ví dụ code" trong REPORT.md
+- Muốn tự huấn luyện: Đọc GUIDE.md, chạy Cách 3
 
 ---
 
-## ❓ Common Questions
+## Câu hỏi thường gặp
 
-**Q: Do I need to train the models myself?**
-A: No! Download pre-trained models from Google Drive (Option 2 or 3)
+Hỏi: Có cần tự huấn luyện mô hình không?
+Đáp: Không. Tải mô hình đã train từ Google Drive.
 
-**Q: Why 5 models if we only use Random Forest?**
-A: To show the comparison and decision process. Also, consensus voting from all 5 can be more reliable.
+Hỏi: Tại sao có 5 mô hình mà chỉ dùng Random Forest?
+Đáp: Để so sánh và chứng minh quyết định. Ngoài ra, biểu quyết từ 5 mô hình có thể đáng tin cậy hơn.
 
-**Q: What if I want to use this in my own project?**
-A: See code examples in REPORT.md. Load models from demo/ folder and use phase6_demo.py as a template.
+Hỏi: Độ chính xác bao nhiêu?
+Đáp: Random Forest đạt 97.59% tổng thể, nhưng 99.9% với PortScan (quan trọng nhất cho bảo mật).
 
-**Q: How accurate is this?**
-A: Random Forest: 97.59% overall, but 99.9% on PortScan (what matters most for security).
+Hỏi: Có thể cải thiện mô hình không?
+Đáp: Có. Huấn luyện lại với nhiều dữ liệu hơn, điều chỉnh siêu tham số, hoặc thử thuật toán khác.
 
-**Q: Can I improve the models?**
-A: Yes! Retrain with more data, adjust hyperparameters, or use different algorithms.
-
-**Q: What if models disagree?**
-A: That's normal. phase6_demo.py shows individual predictions + consensus (majority vote).
+Hỏi: Khi các mô hình không đồng ý?
+Đáp: Bình thường. phase6_demo.py hiển thị dự đoán riêng lẻ và kết quả biểu quyết đa số.
 
 ---
 
-## 📞 Next Steps
+## Bước tiếp theo
 
-1. **Right Now (2 min):** Run `python phase6_demo.py` to see it work
-2. **Next (10 min):** Read README.md for project overview
-3. **Then (1 hour):** Read GUIDE.md or REPORT.md depending on your goal
-4. **Finally:** Choose Option 1, 2, or 3 above
-
----
-
-## 📚 Document Reference
-
-| File | What's In It | Read When |
-|------|-------------|-----------|
-| **GETTING_STARTED.md** | Overview for beginners (you are here) | First thing |
-| **README.md** | Quick project summary + quick start | Want quick overview |
-| **GUIDE.md** | Complete step-by-step guide | Want to understand everything |
-| **REPORT.md** | Why Random Forest? Deep analysis + code examples | Need code examples or deep analysis |
-| **phase6_demo.py** | Code that demonstrates predictions | Want to see how it works |
-| **model_comparison.py** | Code that compares all 5 models | Want to generate charts |
+1. Ngay bây giờ (2 phút): Chạy `python phase6_demo.py`
+2. Tiếp theo (10 phút): Đọc README.md
+3. Sau đó (1 giờ): Đọc GUIDE.md hoặc REPORT.md tùy mục tiêu
 
 ---
 
-## 🎉 You're Ready!
+## Tham khảo tài liệu
 
-Pick Option 1, 2, or 3 above and get started! 
-
-If anything is confusing, jump to the relevant section in the docs. We wrote them to be beginner-friendly.
-
-**Good luck! 🚀**
+| File | Nội dung | Đọc khi |
+|------|---------|---------|
+| GETTING_STARTED.md | Tổng quan cho người mới (file này) | Bắt đầu |
+| README.md | Tóm tắt dự án | Muốn xem nhanh |
+| GUIDE.md | Hướng dẫn chi tiết từng bước | Muốn hiểu tất cả |
+| REPORT.md | Phân tích mô hình chi tiết + ví dụ code | Cần phân tích sâu |
 
 ---
 
-*Last Updated: May 2, 2026*  
-*For questions, check the relevant .md file or look at code comments*
+Cập nhật lần cuối: 04/05/2026
