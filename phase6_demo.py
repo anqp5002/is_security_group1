@@ -38,9 +38,9 @@ from datetime import datetime
 if sys.stdout.encoding != 'utf-8':
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-# 18 core features used across all models
+# 17 core features used across all models
 SELECTED_FEATURES = [
-    "Protocol", "Flow Duration", "Tot Fwd Pkts", "Tot Bwd Pkts",
+    "Flow Duration", "Tot Fwd Pkts", "Tot Bwd Pkts",
     "TotLen Fwd Pkts", "TotLen Bwd Pkts", "Fwd Pkt Len Mean", "Bwd Pkt Len Mean",
     "Flow Byts/s", "Flow Pkts/s", "Pkt Len Mean", "Pkt Len Std",
     "SYN Flag Cnt", "ACK Flag Cnt", "FIN Flag Cnt", "RST Flag Cnt", "PSH Flag Cnt", "URG Flag Cnt"
@@ -51,17 +51,17 @@ DEMO_DIR = "demo"
 # 5 Models to load
 MODEL_CONFIGS = {
     "logistic_regression": {
-        "file": "logistic_regression_model.pkl",
+        "file": "logistic_ids_model.pkl",
         "name": "Logistic Regression",
         "accuracy": 93.0
     },
     "naive_bayes": {
-        "file": "naive_bayes_model.pkl",
+        "file": "categorical_nb_model.pkl",
         "name": "Naive Bayes",
         "accuracy": 83.0
     },
     "svm": {
-        "file": "svm_model.pkl",
+        "file": "svm_final_v5_model.pkl",
         "name": "SVM (Nystroem)",
         "accuracy": 97.0
     },
@@ -71,7 +71,7 @@ MODEL_CONFIGS = {
         "accuracy": 98.2
     },
     "random_forest": {
-        "file": "random_forest_model.pkl",
+        "file": "random_forest_model-002.pkl",
         "name": "Random Forest (DEPLOYED)",
         "accuracy": 97.59
     }
@@ -152,7 +152,7 @@ def create_demo_models(partial_models=None, scaler=None, label_encoder=None):
     np.random.seed(42)
     n_samples = 5000
 
-    X_demo = np.random.rand(n_samples, 18) * 100
+    X_demo = np.random.rand(n_samples, 17) * 100
 
     # Labels: 70% BENIGN, 15% DDoS, 10% PortScan, 5% Bot
     y_demo = np.random.choice(
@@ -203,7 +203,7 @@ def create_demo_models(partial_models=None, scaler=None, label_encoder=None):
         label_encoder.fit(["BENIGN", "DDoS", "PortScan", "Bot"])
 
     print(f"\n✓ Demo models trained on {n_samples} samples")
-    print(f"✓ Features: 18")
+    print(f"✓ Features: 17")
     print(f"✓ Classes: {list(label_encoder.classes_)}\n")
 
     return models, scaler, label_encoder
@@ -221,7 +221,6 @@ def generate_test_flows():
     # Helper to create flow sample
     def make_flow(name, flow_duration, tot_fwd, tot_bwd, flags_pattern):
         flow = [
-            6,  # Protocol (TCP=6)
             flow_duration,
             tot_fwd,
             tot_bwd,
