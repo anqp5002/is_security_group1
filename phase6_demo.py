@@ -213,60 +213,35 @@ def create_demo_models(partial_models=None, scaler=None, label_encoder=None):
 # Step 2: Generate Test Data
 # ============================================================================
 
-def generate_test_flows():
-    """Generate synthetic test network flows with known patterns"""
-
+def generate_test_flows(scaler, label_encoder, n_samples=10):
+    """Lấy dữ liệu thực tế từ tập X_test.csv đã được chia tỷ lệ (scaled) thay vì sinh ra fake data."""
     flows = []
-
-    # Helper to create flow sample
-    def make_flow(name, flow_duration, tot_fwd, tot_bwd, flags_pattern):
-        flow = [
-            flow_duration,
-            tot_fwd,
-            tot_bwd,
-            tot_fwd * 50,  # TotLen Fwd Pkts
-            tot_bwd * 50,  # TotLen Bwd Pkts
-            np.random.rand() * 200,  # Fwd Pkt Len Mean
-            np.random.rand() * 200,  # Bwd Pkt Len Mean
-            np.random.rand() * 1000,  # Flow Byts/s
-            np.random.rand() * 100,   # Flow Pkts/s
-            np.random.rand() * 200,   # Pkt Len Mean
-            np.random.rand() * 100,   # Pkt Len Std
-        ]
-        # Flags (SYN, ACK, FIN, RST, PSH, URG)
-        if flags_pattern == "syn_scan":
-            flow.extend([tot_fwd, 0, 0, 0, 0, 0])  # High SYN, low others
-        elif flags_pattern == "ddos":
-            flow.extend([0, tot_fwd, 0, 0, 0, 0])  # High ACK (established)
-        elif flags_pattern == "normal":
-            flow.extend([1, tot_fwd, 0, 0, 0, 0])  # Normal SYN-ACK
-        else:
-            flow.extend([np.random.rand() * 10 for _ in range(6)])
-
-        flows.append((name, np.array(flow)))
-
-    print("📝 Generating 10 synthetic network flows...\n")
-
-    # Normal traffic
-    make_flow("Normal Flow 1", 60, 10, 15, "normal")
-    make_flow("Normal Flow 2", 120, 25, 30, "normal")
-    make_flow("Normal Flow 3", 30, 5, 8, "normal")
-
-    # PortScan (many SYN, no ACK = reconnaissance)
-    make_flow("PortScan Attempt 1", 5, 100, 0, "syn_scan")
-    make_flow("PortScan Attempt 2", 10, 150, 5, "syn_scan")
-
-    # DDoS (many packets, high throughput)
-    make_flow("DDoS Attack 1", 300, 5000, 100, "ddos")
-    make_flow("DDoS Attack 2", 450, 8000, 50, "ddos")
-
-    # Bot (command & control communication)
-    make_flow("Bot C&C 1", 120, 50, 100, "normal")
-    make_flow("Bot C&C 2", 180, 75, 150, "normal")
-
-    # Mixed/Unclear
-    make_flow("Suspicious Flow", 45, 200, 30, "syn_scan")
-
+    
+    print(f"📝 Lấy ngẫu nhiên {n_samples} luồng trích xuất từ dữ liệu thật...\n")
+    
+    try:
+        # Tải dữ liệu thực tế từ file đã lưu
+        X_df = pd.read_csv('HoangAnh_N23DCCN071/data/X_test.csv')
+        y_df = pd.read_csv('HoangAnh_N23DCCN071/data/y_test.csv')
+        
+        np.random.seed(42)
+        random_indices = np.random.choice(len(X_df), size=n_samples, replace=False)
+        
+        for i, idx in enumerate(random_indices):
+            scaled_vals = X_df.iloc[idx].values
+            
+            # Vì phase6_demo.py sẽ thực hiện scaler.transform lại (cho đúng cấu trúc pipeline real-time), 
+            # chúng ta phải "unscale" về lại dạng RAW ban đầu để các model tuyến tính không bị quá nhỏ.
+            raw_vals = scaler.inverse_transform([scaled_vals])[0]
+            
+            true_label_idx = y_df.iloc[idx].values[0]
+            true_label = label_encoder.inverse_transform([true_label_idx])[0]
+            
+            flows.append((f"Real Flow {i+1} (Truth: {true_label})", raw_vals))
+            
+    except Exception as e:
+        print(f"Lỗi khi load dữ liệu thực: {e}")
+        
     return flows
 
 
@@ -359,7 +334,7 @@ def main():
         return
 
     # Generate test flows
-    test_flows = generate_test_flows()
+    test_flows = generate_test_flows(scaler, label_encoder)
 
     # Make predictions
     print("=" * 100)
@@ -434,7 +409,7 @@ def main():
     print()
     print("💡 What just happened:")
     print("  1. Loaded all 5 ML models from demo/ folder")
-    print("  2. Generated 10 synthetic network flows")
+    print("  2. Lấy dữ liệu 10 luồng thật chưa scale từ thư mục của HoangAnh")
     print("  3. Scaled features using trained scaler")
     print("  4. Made predictions with all 5 models")
     print("  5. Determined consensus prediction (most common vote)")
