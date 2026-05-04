@@ -682,6 +682,32 @@ To get full project with all outputs, charts, and 5 pre-trained models:
 
 ---
 
-**Last Updated:** May 2, 2026  
+---
+
+## 🧪 SOC Lab — Wazuh SIEM Stack
+
+Bên cạnh ML-based IDS, dự án còn bao gồm một **SOC Lab hoàn chỉnh** với Wazuh 4.9.0, pfSense, và Suricata.
+
+### Tài liệu tham khảo
+
+| File | Mô tả |
+|------|-------|
+| **[WAZUH_REPORT.md](WAZUH_REPORT.md)** | Báo cáo triển khai Wazuh (18 sections) |
+| **[soc-lab/CONFIGURATION.md](soc-lab/CONFIGURATION.md)** | Cấu hình chi tiết (19 sections — network, Docker, Wazuh, rules, scripts, SSH brute-force) |
+| **[soc-lab/pfsense/README.md](soc-lab/pfsense/README.md)** | Hướng dẫn pfSense từ A-Z (installation, NAT, DHCP, DNS, VLAN, hardening) |
+| **[soc-lab/wazuh/README.md](soc-lab/wazuh/README.md)** | Báo cáo Wazuh (architecture, configs, agent management, troubleshooting) |
+
+### Quick Deploy
+
+```bash
+cd soc-lab
+docker compose up -d
+```
+
+Sau 3-5 phút truy cập Dashboard tại `https://192.168.100.102:443` (user: `admin`, pass: `admin`).
+
+---
+
+**Last Updated:** May 4, 2026  
 **Status:** ✅ Complete & Ready for Deployment  
 **Model Deployed:** Random Forest (97.59% accuracy, 99.9% PortScan detection)

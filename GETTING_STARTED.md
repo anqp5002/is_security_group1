@@ -218,6 +218,12 @@ Quick summary:
 - Read GUIDE.md completely
 - Run Option 3 step by step
 
+**I want to explore the SOC Lab (Wazuh SIEM):**
+- Read [WAZUH_REPORT.md](WAZUH_REPORT.md) — Wazuh deployment & architecture
+- Read [soc-lab/CONFIGURATION.md](soc-lab/CONFIGURATION.md) — Cấu hình chi tiết
+- Read [soc-lab/pfsense/README.md](soc-lab/pfsense/README.md) — pfSense setup
+- Read [soc-lab/wazuh/README.md](soc-lab/wazuh/README.md) — Wazuh component details
+
 ---
 
 ## 🎓 Learning Path
@@ -245,6 +251,13 @@ Quick summary:
 - [ ] Train models on Kaggle (TV3 + TV4) - 2-3 hours
 - [ ] Run TV5 (comparison) - 1 min
 - [ ] Modify code, experiment
+
+### **Week 4: SOC Lab (Optional)**
+- [ ] Read [WAZUH_REPORT.md](WAZUH_REPORT.md) - 30 min
+- [ ] Deploy Wazuh stack: `cd soc-lab && docker compose up -d` - 10 min
+- [ ] Read [soc-lab/pfsense/README.md](soc-lab/pfsense/README.md) - 20 min
+- [ ] Configure pfSense syslog forwarding - 15 min
+- [ ] Install Windows Wazuh agent - 15 min
 
 ---
 
@@ -287,6 +300,10 @@ A: That's normal. phase6_demo.py shows individual predictions + consensus (major
 | **README.md** | Quick project summary + quick start | Want quick overview |
 | **GUIDE.md** | Complete step-by-step guide | Want to understand everything |
 | **REPORT.md** | Why Random Forest? Deep analysis + code examples | Need code examples or deep analysis |
+| **WAZUH_REPORT.md** | Wazuh SIEM deployment report | Want SOC Lab documentation |
+| **soc-lab/CONFIGURATION.md** | Cấu hình chi tiết SOC Lab | Need config references |
+| **soc-lab/pfsense/README.md** | pfSense firewall setup | Need pfSense guide |
+| **soc-lab/wazuh/README.md** | Wazuh component configs | Need Wazuh integration details |
 | **phase6_demo.py** | Code that demonstrates predictions | Want to see how it works |
 | **model_comparison.py** | Code that compares all 5 models | Want to generate charts |
 

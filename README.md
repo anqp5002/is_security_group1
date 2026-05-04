@@ -104,16 +104,77 @@ python model_comparison.py    # 1 min
 | **[GETTING_STARTED.md](GETTING_STARTED.md)** | Beginner-friendly overview & learning path | **Start here first!** |
 | **[GUIDE.md](GUIDE.md)** | Complete step-by-step guide with all details | You want to understand everything |
 | **[REPORT.md](REPORT.md)** | Detailed model analysis & deployment decision | You need code examples or deep analysis |
+| **[WAZUH_REPORT.md](WAZUH_REPORT.md)** | Wazuh SIEM deployment (Docker, pfSense, Suricata) | You want the SOC Lab documentation |
 
 ---
 
-## 🏗️ Project Structure
+## 🧪 SOC Lab — Wazuh SIEM Stack
+
+Dự án bao gồm một **SOC Lab hoàn chỉnh** với Wazuh 4.9.0 SIEM stack chạy trên Docker, tích hợp pfSense firewall, Suricata IDS, và VirusTotal threat intelligence.
+
+### Kiến trúc
+
+```
+                         ┌──────────────────┐
+                         │   pfSense  WAN    │ 192.168.100.1
+                         │    Firewall       │
+                         └────────┬─────────┘
+                                  │
+                         ┌────────┴─────────┐
+                         │   Docker Host     │ 192.168.100.102
+                         │  ┌────────────┐  │
+                         │  │   Wazuh     │  │
+                         │  │   Manager   │  │
+                         │  │ 172.20.0.10 │  │
+                         │  └──────┬─────┘  │
+                         │  ┌──────┴─────┐  │
+                         │  │  Wazuh     │  │
+                         │  │  Indexer   │  │
+                         │  │ 172.20.0.11│  │
+                         │  └──────┬─────┘  │
+                         │  ┌──────┴─────┐  │
+                         │  │  Wazuh     │  │
+                         │  │  Dashboard │  │
+                         │  │172.20.0.12 │  │
+                         │  └────────────┘  │
+                         │  ┌────────────┐  │
+                         │  │  Suricata  │  │
+                         │  │(host mode) │  │
+                         │  └────────────┘  │
+                         └──────────────────┘
+```
+
+### Tài liệu SOC Lab
+
+| File | Nội dung |
+|------|----------|
+| **[soc-lab/CONFIGURATION.md](soc-lab/CONFIGURATION.md)** | Cấu hình chi tiết toàn bộ hệ thống (19 sections) |
+| **[soc-lab/pfsense/README.md](soc-lab/pfsense/README.md)** | Hướng dẫn cài đặt & cấu hình pfSense |
+| **[soc-lab/wazuh/README.md](soc-lab/wazuh/README.md)** | Báo cáo triển khai Wazuh chi tiết |
+| **[WAZUH_REPORT.md](WAZUH_REPORT.md)** | Báo cáo tổng hợp Wazuh SOC Lab |
+
+### Tính năng SOC Lab
+
+- **Wazuh 4.9.0** — SIEM trung tâm (manager, indexer, dashboard)
+- **pfSense integration** — Firewall logs qua syslog UDP port 514
+- **Windows Agent** — Thu thập event logs, FIM, Sysmon
+- **Suricata IDS** — Phát hiện tấn công mạng theo signature
+- **VirusTotal** — Enrich file hashes với threat intelligence
+- **File Integrity Monitoring** — Theo dõi thay đổi file real-time
+- **Sysmon** — Enhanced Windows monitoring
+- **SSH Brute Force Detection** — Phát hiện tấn công brute-force
+
+---
+
+## Project Structure
 
 ```
 is_security_group1/
 ├── README.md                           ← You are here
 ├── GUIDE.md                            ← Complete documentation
 ├── REPORT.md                           ← Model analysis details
+├── GETTING_STARTED.md                  ← Beginner-friendly guide
+├── WAZUH_REPORT.md                     ← Wazuh SIEM deployment report
 ├── model_comparison.py                 ← Compare all 5 models
 ├── phase6_demo.py                      ← Real-time prediction demo
 ├── requirements.txt                    ← Dependencies
@@ -136,9 +197,21 @@ is_security_group1/
 │   ├── nodebook/                       (3 Jupyter notebooks)
 │   └── data/artifacts/                 (Confusion matrices)
 │
-└── N23DCCN138_PhamQuocAn/              (TV4: Train KNN/RF + Real-time alerts)
-    ├── notebooks/                      (IDS_ML_Notebook.py)
-    └── outputs/                        (Confusion matrices & charts)
+├── N23DCCN138_PhamQuocAn/              (TV4: Train KNN/RF + Real-time alerts)
+│   ├── notebooks/                      (IDS_ML_Notebook.py)
+│   └── outputs/                        (Confusion matrices & charts)
+│
+└── soc-lab/                            ← SOC Lab (Wazuh SIEM + pfSense + Suricata)
+    ├── CONFIGURATION.md                ← Chi tiết cấu hình toàn bộ hệ thống
+    ├── docker-compose.yml              ← Docker Compose stack
+    ├── .env                            ← Environment variables
+    ├── pfsense/README.md               ← pfSense firewall setup guide
+    ├── wazuh/README.md                 ← Wazuh SIEM deployment details
+    ├── wazuh/config/                   ← Wazuh config files (manager, rules, decoders)
+    ├── wazuh/scripts/                  ← Agent management scripts
+    ├── suricata/                       ← Suricata IDS config & rules
+    ├── indexer/config/                 ← OpenSearch config
+    └── dashboard/config/               ← Dashboard config
 ```
 
 ---

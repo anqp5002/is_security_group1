@@ -25,6 +25,7 @@
 16. [Troubleshooting Guide](#16-troubleshooting-guide)
 17. [Credentials Reference](#17-credentials-reference)
 18. [Appendices](#18-appendices)
+19. [SSH Brute Force Simulation & Detection](#19-ssh-brute-force-simulation--detection)
 
 ---
 
@@ -1163,8 +1164,130 @@ docker exec wazuh-manager ls -la /etc/ssl/
 
 ---
 
-**Report Version:** 1.0  
+**Report Version:** 1.1  
 **Last Updated:** May 4, 2026  
 **Wazuh Version:** 4.9.0  
 **Deployment Type:** Docker Compose (single-node)  
 **Author:** SOC Lab Team
+
+---
+
+## 19. SSH Brute Force Simulation & Detection
+
+> **⚠️ LAB USE ONLY — Do not attack production systems!**
+
+This module simulates an SSH brute-force attack from Kali Linux against the Windows Docker host, and demonstrates detection through Wazuh.
+
+### 19.1 Lab Topology
+
+```
+┌──────────────────┐     hydra -l dell -P pass.txt     ┌──────────────────┐
+│  Kali Linux VM   │ ──── ssh://192.168.100.102 ──────▶ │  Windows Target  │
+│  (Attacker)      │      Brute Force SSH Login         │  (Docker Host)   │
+└──────────────────┘                                    └────────┬─────────┘
+                                                                  │
+                                                          Event ID 4625
+                                                          (Failed logon)
+                                                                  ▼
+                                                         ┌──────────────────┐
+                                                         │  Wazuh Manager   │
+                                                         │  Rule Level ≥ 10 │
+                                                         └──────────────────┘
+```
+
+### 19.2 Setup — Target (Windows)
+
+Enable OpenSSH Server on the Docker host machine. Run **PowerShell (Admin)**:
+
+```powershell
+# Install OpenSSH Server
+Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+
+# Start and enable service
+Start-Service sshd
+Set-Service -Name sshd -StartupType Automatic
+
+# Verify
+Get-Service sshd
+# Expected: Status = Running
+```
+
+### 19.3 Setup — Attacker (Kali Linux)
+
+#### Create Password List
+
+```bash
+cat > passwords.txt << EOF
+admin
+password
+123456
+test123
+YourRealPassword
+EOF
+```
+
+#### Run Hydra Attack
+
+```bash
+# Syntax
+hydra -l <username> -P passwords.txt ssh://<target_ip>
+
+# Example (replace 'dell' with actual Windows username)
+hydra -l dell -P passwords.txt ssh://192.168.100.102
+
+# Flags:
+#   -l    Single username (known)
+#   -L    Username list file (unknown)
+#   -P    Password list file
+```
+
+### 19.4 Detection in Wazuh Dashboard
+
+1. Navigate to **Wazuh Dashboard** → **Threat Hunting**
+2. Filter: `data.win.system.eventID: 4625`
+3. Observe multiple failed logon attempts from the Kali IP
+
+| Field | Value | Meaning |
+|-------|-------|---------|
+| Event ID | 4625 | Failed logon attempt |
+| failureReason | %%2313 | Unknown username or bad password |
+| logonType | 8 | NetworkCleartext (SSH) |
+| processName | sshd.exe | SSH daemon processing request |
+| rule.level | 10+ (escalated) | Brute force detected! |
+
+### 19.5 Defensive Countermeasures
+
+| Measure | Description | Priority |
+|---------|-------------|----------|
+| Strong password | >12 characters, complex | 🔴 Critical |
+| MFA | Multi-Factor Authentication | 🔴 Critical |
+| Rate-limiting | Limit failed login attempts | 🟡 Medium |
+| Account lockout | Auto-lock after N failures | 🟡 Medium |
+| SSH key auth | Replace password with key auth | 🟡 Medium |
+| Wazuh monitoring | Continuous dashboard review | 🟢 Low |
+
+### 19.6 Custom Wazuh Rule (Optional)
+
+Add to `local_rules.xml` for enhanced brute-force detection:
+
+```xml
+<rule id="100200" level="10">
+  <if_group>windows|sysmon</if_group>
+  <field name="win.system.eventID">4625</field>
+  <description>SSH Brute Force: Multiple failed logon attempts from $(srcip)</description>
+  <options>no_full_log</options>
+  <group>authentication_failure,brute_force,ssh</group>
+</rule>
+```
+
+### 19.7 Event Flow
+
+```
+1. Hydra (Kali) ──TCP/22──> sshd (Windows)
+2. sshd logs Event ID 4625 to Security log
+3. Wazuh Agent reads Security event channel
+4. Agent ──TCP:1514──> Wazuh Manager
+5. Manager evaluates rules → escalates level
+6. Alert stored in OpenSearch via Filebeat
+7. Alert visible in Dashboard (Threat Hunting)
+```
