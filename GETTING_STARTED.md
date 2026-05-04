@@ -202,6 +202,12 @@ Tùy theo nhu cầu:
 - Cần tích hợp vào ứng dụng: Đọc phần "Ví dụ code" trong REPORT.md
 - Muốn tự huấn luyện: Đọc GUIDE.md, chạy Cách 3
 
+**I want to explore the SOC Lab (Wazuh SIEM):**
+- Read [WAZUH_REPORT.md](WAZUH_REPORT.md) — Wazuh deployment & architecture
+- Read [soc-lab/CONFIGURATION.md](soc-lab/CONFIGURATION.md) — Cấu hình chi tiết
+- Read [soc-lab/pfsense/README.md](soc-lab/pfsense/README.md) — pfSense setup
+- Read [soc-lab/wazuh/README.md](soc-lab/wazuh/README.md) — Wazuh component details
+
 ---
 
 ## Câu hỏi thường gặp
@@ -221,6 +227,13 @@ Hỏi: Có thể cải thiện mô hình không?
 Hỏi: Khi các mô hình không đồng ý?
 Đáp: Bình thường. phase6_demo.py hiển thị dự đoán riêng lẻ và kết quả biểu quyết đa số.
 
+### **Week 4: SOC Lab (Optional)**
+- [ ] Read [WAZUH_REPORT.md](WAZUH_REPORT.md) - 30 min
+- [ ] Deploy Wazuh stack: `cd soc-lab && docker compose up -d` - 10 min
+- [ ] Read [soc-lab/pfsense/README.md](soc-lab/pfsense/README.md) - 20 min
+- [ ] Configure pfSense syslog forwarding - 15 min
+- [ ] Install Windows Wazuh agent - 15 min
+
 ---
 
 ## Bước tiếp theo
@@ -239,6 +252,33 @@ Hỏi: Khi các mô hình không đồng ý?
 | README.md | Tóm tắt dự án | Muốn xem nhanh |
 | GUIDE.md | Hướng dẫn chi tiết từng bước | Muốn hiểu tất cả |
 | REPORT.md | Phân tích mô hình chi tiết + ví dụ code | Cần phân tích sâu |
+
+---
+
+## 📚 Document Reference
+
+| File | What's In It | Read When |
+|------|-------------|-----------|
+| **GETTING_STARTED.md** | Overview for beginners (you are here) | First thing |
+| **README.md** | Quick project summary + quick start | Want quick overview |
+| **GUIDE.md** | Complete step-by-step guide | Want to understand everything |
+| **REPORT.md** | Why Random Forest? Deep analysis + code examples | Need code examples or deep analysis |
+| **WAZUH_REPORT.md** | Wazuh SIEM deployment report | Want SOC Lab documentation |
+| **soc-lab/CONFIGURATION.md** | Cấu hình chi tiết SOC Lab | Need config references |
+| **soc-lab/pfsense/README.md** | pfSense firewall setup | Need pfSense guide |
+| **soc-lab/wazuh/README.md** | Wazuh component configs | Need Wazuh integration details |
+| **phase6_demo.py** | Code that demonstrates predictions | Want to see how it works |
+| **model_comparison.py** | Code that compares all 5 models | Want to generate charts |
+
+---
+
+## 🎉 You're Ready!
+
+Pick Option 1, 2, or 3 above and get started! 
+
+If anything is confusing, jump to the relevant section in the docs. We wrote them to be beginner-friendly.
+
+**Good luck! 🚀**
 
 ---
 

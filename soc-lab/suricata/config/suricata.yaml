@@ -1,0 +1,73 @@
+%YAML 1.1
+---
+# Network interface — uses host network on Windows Docker Desktop
+af-packet:
+  - interface: lo
+    cluster-id: 99
+    cluster-type: cluster_flow
+    defrag: yes
+    use-mmap: yes
+    ring-size: 2048
+    rollover: yes
+
+vars:
+  address-groups:
+    HOME_NET: "[192.168.1.0/24,192.168.100.0/24,172.20.0.0/24,10.0.0.0/8]"
+    EXTERNAL_NET: "!$HOME_NET"
+    DNS_SERVERS: "$HOME_NET"
+    SMTP_SERVERS: "$HOME_NET"
+    HTTP_SERVERS: "$HOME_NET"
+    SQL_SERVERS: "$HOME_NET"
+    TELNET_SERVERS: "$HOME_NET"
+  port-groups:
+    HTTP_PORTS: "80,443,8080,8443"
+    SHELLCODE_PORTS: "!80"
+    ORACLE_PORTS: "1521"
+    SSH_PORTS: "22"
+
+app-layer:
+  protocols:
+    modbus:
+      enabled: yes
+    dnp3:
+      enabled: yes
+
+outputs:
+  - eve-log:
+      enabled: yes
+      filetype: regular
+      filename: eve.json
+      types:
+        - alert:
+            payload: yes
+            metadata: yes
+        - dns
+        - http:
+            extended: yes
+        - tls:
+            session-fields: yes
+        - ssh
+        - smtp
+        - flow
+        - netflow
+        - stats
+
+  - fast:
+      enabled: yes
+      filename: fast.log
+      append: yes
+
+  - stats:
+      enabled: yes
+      filename: stats.log
+      interval: 30
+
+logging:
+  default-log-level: info
+  outputs:
+    - level: info
+      type: file
+      filename: suricata.log
+
+rule-files:
+  - /etc/suricata/rules/*.rules

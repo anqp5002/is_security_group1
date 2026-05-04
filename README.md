@@ -42,6 +42,75 @@ Chi tiết phân tích xem tại [REPORT.md](REPORT.md).
 
 ---
 
+## 📚 Tài liệu
+
+| Tài liệu | Mục đích | Đọc khi |
+|----------|---------|---------|
+| **[GETTING_STARTED.md](GETTING_STARTED.md)** | Tổng quan cho người mới & lộ trình học | **Bắt đầu từ đây!** |
+| **[GUIDE.md](GUIDE.md)** | Hướng dẫn đầy đủ từng bước | Muốn hiểu tất cả |
+| **[REPORT.md](REPORT.md)** | Phân tích mô hình chi tiết & quyết định triển khai | Cần ví dụ code hoặc phân tích sâu |
+| **[WAZUH_REPORT.md](WAZUH_REPORT.md)** | Triển khai Wazuh SIEM (Docker, pfSense, Suricata) | Muốn tài liệu SOC Lab |
+
+---
+
+## 🧪 SOC Lab — Wazuh SIEM Stack
+
+Dự án bao gồm một **SOC Lab hoàn chỉnh** với Wazuh 4.9.0 SIEM stack chạy trên Docker, tích hợp pfSense firewall, Suricata IDS, và VirusTotal threat intelligence.
+
+### Kiến trúc
+
+```
+                         ┌──────────────────┐
+                         │   pfSense  WAN    │ 192.168.100.1
+                         │    Firewall       │
+                         └────────┬─────────┘
+                                  │
+                         ┌────────┴─────────┐
+                         │   Docker Host     │ 192.168.100.102
+                         │  ┌────────────┐  │
+                         │  │   Wazuh     │  │
+                         │  │   Manager   │  │
+                         │  │ 172.20.0.10 │  │
+                         │  └──────┬─────┘  │
+                         │  ┌──────┴─────┐  │
+                         │  │  Wazuh     │  │
+                         │  │  Indexer   │  │
+                         │  │ 172.20.0.11│  │
+                         │  └──────┬─────┘  │
+                         │  ┌──────┴─────┐  │
+                         │  │  Wazuh     │  │
+                         │  │  Dashboard │  │
+                         │  │172.20.0.12 │  │
+                         │  └────────────┘  │
+                         │  ┌────────────┐  │
+                         │  │  Suricata  │  │
+                         │  │(host mode) │  │
+                         │  └────────────┘  │
+                         └──────────────────┘
+```
+
+### Tài liệu SOC Lab
+
+| File | Nội dung |
+|------|----------|
+| **[soc-lab/CONFIGURATION.md](soc-lab/CONFIGURATION.md)** | Cấu hình chi tiết toàn bộ hệ thống (19 sections) |
+| **[soc-lab/pfsense/README.md](soc-lab/pfsense/README.md)** | Hướng dẫn cài đặt & cấu hình pfSense |
+| **[soc-lab/wazuh/README.md](soc-lab/wazuh/README.md)** | Báo cáo triển khai Wazuh chi tiết |
+| **[WAZUH_REPORT.md](WAZUH_REPORT.md)** | Báo cáo tổng hợp Wazuh SOC Lab |
+
+### Tính năng SOC Lab
+
+- **Wazuh 4.9.0** — SIEM trung tâm (manager, indexer, dashboard)
+- **pfSense integration** — Firewall logs qua syslog UDP port 514
+- **Windows Agent** — Thu thập event logs, FIM, Sysmon
+- **Suricata IDS** — Phát hiện tấn công mạng theo signature
+- **VirusTotal** — Enrich file hashes với threat intelligence
+- **File Integrity Monitoring** — Theo dõi thay đổi file real-time
+- **Sysmon** — Enhanced Windows monitoring
+- **SSH Brute Force Detection** — Phát hiện tấn công brute-force
+
+---
+
 ## Cấu trúc dự án
 
 ```
@@ -50,6 +119,7 @@ is_security_group1/
 ├── REPORT.md                          -- Báo cáo phân tích chi tiết
 ├── GUIDE.md                           -- Hướng dẫn đầy đủ
 ├── GETTING_STARTED.md                 -- Hướng dẫn cho người mới
+├── WAZUH_REPORT.md                    -- Báo cáo triển khai Wazuh SIEM
 ├── model_comparison.py                -- So sánh 5 mô hình, tạo biểu đồ
 ├── phase6_demo.py                     -- Demo dự đoán thời gian thực
 ├── requirements.txt                   -- Thư viện Python cần thiết
@@ -68,14 +138,25 @@ is_security_group1/
 │   ├── outputs/                       -- Ma trận nhầm lẫn KNN, RF
 │   └── logs/                          -- File cảnh báo alerts.log
 │
-└── demo/                              -- Mô hình đã train (tải từ Google Drive)
-    ├── logistic_regression_model.pkl
-    ├── naive_bayes_model.pkl
-    ├── svm_model.pkl
-    ├── knn_model.pkl
-    ├── random_forest_model.pkl        -- Mô hình được triển khai
-    ├── scaler.pkl                     -- Bộ chuẩn hóa đặc trưng
-    └── label_encoder.pkl              -- Bộ mã hóa nhãn
+├── demo/                              -- Mô hình đã train (tải từ Google Drive)
+│   ├── logistic_regression_model.pkl
+│   ├── naive_bayes_model.pkl
+│   ├── svm_model.pkl
+│   ├── knn_model.pkl
+│   ├── random_forest_model.pkl        -- Mô hình được triển khai
+│   ├── scaler.pkl                     -- Bộ chuẩn hóa đặc trưng
+│   └── label_encoder.pkl              -- Bộ mã hóa nhãn
+│
+└── soc-lab/                           -- SOC Lab (Wazuh SIEM + pfSense + Suricata)
+    ├── CONFIGURATION.md               -- Chi tiết cấu hình toàn bộ hệ thống
+    ├── docker-compose.yml             -- Docker Compose stack
+    ├── pfsense/README.md              -- pfSense firewall setup guide
+    ├── wazuh/README.md                -- Wazuh SIEM deployment details
+    ├── wazuh/config/                  -- Wazuh config files (manager, rules, decoders)
+    ├── wazuh/scripts/                 -- Agent management scripts
+    ├── suricata/                      -- Suricata IDS config & rules
+    ├── indexer/config/                -- OpenSearch config
+    └── dashboard/config/              -- Dashboard config
 ```
 
 ---

@@ -1,0 +1,10 @@
+server.name: wazuh-dashboard
+server.port: 5601
+server.host: 0.0.0.0
+opensearch.hosts: [https://wazuh.indexer:9200]
+opensearch.ssl.verificationMode: none
+opensearch.username: ${INDEXER_USERNAME}
+opensearch.password: ${INDEXER_PASSWORD}
+opensearch.requestHeadersAllowlist: ["securitytenant","Authorization"]
+uiSettings.overrides.defaultRoute: /app/wz-home
+wazuh.enabled: true

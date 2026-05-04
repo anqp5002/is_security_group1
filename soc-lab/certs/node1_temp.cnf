@@ -1,0 +1,6 @@
+﻿[ san_node1 ]
+DNS.1 = wazuh.indexer
+DNS.2 = node-1
+DNS.3 = localhost
+IP.1 = 172.20.0.11
+IP.2 = 127.0.0.1

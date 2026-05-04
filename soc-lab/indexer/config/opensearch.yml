@@ -1,0 +1,34 @@
+cluster.name: wazuh-cluster
+node.name: node-1
+node.master: true
+node.data: true
+
+path.data: /var/lib/wazuh-indexer
+path.logs: /var/log/wazuh-indexer
+
+network.host: 0.0.0.0
+http.port: 9200
+
+discovery.type: single-node
+
+# Allow Filebeat 7.x (ES 7.x) to send _type in bulk requests to OpenSearch 2.x.
+# Without this, OpenSearch 2.x rejects: "unknown parameter [_type]"
+# See: https://github.com/opensearch-project/OpenSearch/issues/3484
+compatibility:
+  override_main_response_version: true
+
+plugins.security.ssl.transport.pemcert_filepath: certs/node-1.pem
+plugins.security.ssl.transport.pemkey_filepath: certs/node-1-key.pem
+plugins.security.ssl.transport.pemtrustedcas_filepath: certs/root-ca.pem
+plugins.security.ssl.http.enabled: true
+plugins.security.ssl.http.pemcert_filepath: certs/node-1.pem
+plugins.security.ssl.http.pemkey_filepath: certs/node-1-key.pem
+plugins.security.ssl.http.pemtrustedcas_filepath: certs/root-ca.pem
+plugins.security.ssl.transport.enforce_hostname_verification: false
+plugins.security.ssl.transport.resolve_hostname: false
+plugins.security.authcz.admin_dn:
+  - CN=admin,OU=Wazuh,O=Wazuh,L=California,C=US
+plugins.security.nodes_dn:
+  - CN=*
+action.auto_create_index: "true"
+bootstrap.memory_lock: true
