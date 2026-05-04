@@ -1,164 +1,148 @@
-# 📖 Complete Project Guide
+# Hướng dẫn dự án đầy đủ
 
-**Real-time Network Intrusion Detection System using Machine Learning**
-
----
-
-## 📑 Table of Contents
-
-1. [Quick Start (5 min)](#quick-start)
-2. [Project Overview](#project-overview)
-3. [File Structure & What Each File Does](#file-structure)
-4. [How to Run (Step by Step)](#how-to-run)
-5. [Model Comparison & Results](#model-comparison)
-6. [Google Drive: Pre-trained Results](#google-drive-pre-trained-results)
-7. [Troubleshooting](#troubleshooting)
+Hệ thống phát hiện xâm nhập mạng thời gian thực sử dụng Học máy
 
 ---
 
-## Quick Start
+## Mục lục
 
-### Option 1: Demo Only (1 minute)
+1. [Bắt đầu nhanh](#bắt-đầu-nhanh)
+2. [Tổng quan dự án](#tổng-quan-dự-án)
+3. [Cấu trúc file và chức năng](#cấu-trúc-file)
+4. [Hướng dẫn chạy từng bước](#hướng-dẫn-chạy)
+5. [So sánh mô hình và kết quả](#so-sánh-mô-hình)
+6. [Google Drive: Kết quả đã train](#google-drive)
+7. [Xử lý sự cố](#xử-lý-sự-cố)
+
+---
+
+## Bắt đầu nhanh
+
+### Lựa chọn 1: Chỉ chạy demo (1 phút)
 ```bash
 pip install -r requirements.txt
 python phase6_demo.py
 ```
-**Output:** Real-time predictions from **ALL 5 MODELS** with consensus voting:
-- Logistic Regression, Naive Bayes, SVM, KNN, Random Forest
-- Side-by-side predictions with confidence scores
-- Consensus attack prediction (majority vote)
-- Suricata-format alerts
-- Model agreement comparison
+Kết quả: Dự đoán thời gian thực từ 5 mô hình với biểu quyết đa số.
 
-### Option 2: Use Pre-trained Models (Recommended ⭐)
+### Lựa chọn 2: Dùng mô hình đã train (khuyến nghị)
 
-**For Quick Demo (Just run phase6_demo.py):**
+Để chạy demo nhanh:
 ```bash
-# 1. Download from Google Drive:
+# 1. Tải từ Google Drive:
 # https://drive.google.com/drive/folders/11JVbhnkZmTAB5ptHeTcQ9F00Y51MoEam
 
-# 2. Download these 3 files:
+# 2. Tải 3 file sau:
 #    - random_forest_model.pkl
 #    - scaler.pkl
 #    - label_encoder.pkl
 
-# 3. Place them in the demo/ folder:
+# 3. Đặt vào thư mục demo/
 mkdir -p demo/
-# Copy the 3 files into: demo/
+# Sao chép 3 file vào demo/
 
-# 4. Run demo:
+# 4. Chạy demo:
 python phase6_demo.py
 ```
 
-**For Full Analysis (With comparison charts):**
+Để phân tích đầy đủ (có biểu đồ so sánh):
 ```bash
-# Extract all outputs to their respective folders:
-# - HoangAnh_N23DCCN071/data/processed/
-# - HoangAnh_N23DCCN071/data/final/
-# - HoangAnh_N23DCCN071/artifacts/
-# - HoangAnh_N23DCCN071/outputs/
-# - N23DCCN001_DangKimAn/data/artifacts/
-# - N23DCCN138_PhamQuocAn/outputs/
-# - outputs/comparison/
-# - demo/ (3 model files)
-
-# Then run comparison:
+# Giải nén tất cả đầu ra vào các thư mục tương ứng
+# Sau đó chạy:
 python model_comparison.py
 ```
 
-### Option 3: Train Everything on Kaggle (2-4 hours)
-
-**⭐ RECOMMENDED:** Use Kaggle notebooks instead of local (better RAM, faster)
+### Lựa chọn 3: Huấn luyện từ đầu trên Kaggle (2-4 giờ)
 
 ```bash
-# TV1: Data Preprocessing (Local)
+# TV1: Tiền xử lý dữ liệu (Chạy local)
 cd HoangAnh_N23DCCN071
 mkdir -p data/raw
-# Download 8 CSVs from Kaggle and extract to data/raw/
-python preprocess.py          # 10-15 min
+# Tải 8 file CSV từ Kaggle về data/raw/
+python preprocess.py          # 10-15 phút
 
-# TV2: Feature Selection (Local)
-python prepare_model_data.py  # 5-10 min
+# TV2: Chọn đặc trưng (Chạy local)
+python prepare_model_data.py  # 5-10 phút
 
-# TV3: Train 3 Models (ON KAGGLE)
+# TV3: Huấn luyện 3 mô hình (Trên Kaggle)
 cd ../N23DCCN001_DangKimAn
-# 1. Create new Kaggle notebook
-# 2. Add dataset: chethuhn/network-intrusion-dataset
-# 3. Copy code from: nodebook/logistic_regression.ipynb
-# 4. Run on Kaggle (no memory issues)
-# Time: 30-60 min
+# 1. Tạo notebook mới trên Kaggle
+# 2. Thêm dataset: chethuhn/network-intrusion-dataset
+# 3. Sao chép code từ nodebook/logistic_regression.ipynb
+# 4. Chạy trên Kaggle
+# Thời gian: 30-60 phút
 
-# TV4: Train Advanced Models (ON KAGGLE)
+# TV4: Huấn luyện mô hình nâng cao (Trên Kaggle)
 cd ../N23DCCN138_PhamQuocAn
-# 1. Create new Kaggle notebook
-# 2. Add dataset: chethuhn/network-intrusion-dataset
-# 3. Copy code from: notebooks/IDS_ML_Notebook.py
-# 4. Run on Kaggle (recommended for RAM)
-# Time: 60-120 min
+# 1. Tạo notebook mới trên Kaggle
+# 2. Thêm dataset: chethuhn/network-intrusion-dataset
+# 3. Sao chép code từ notebooks/IDS_ML_Notebook.py
+# 4. Chạy trên Kaggle (khuyến nghị vì cần nhiều RAM)
+# Thời gian: 60-120 phút
 
-# TV5: Compare All Models (Local)
+# TV5: So sánh tất cả mô hình (Chạy local)
 cd ../
-python model_comparison.py    # 1 min
+python model_comparison.py    # 1 phút
 ```
 
 ---
 
-## Project Overview
+## Tổng quan dự án
 
-### What This Project Does
+### Dự án này làm gì
 
-Trains 5 ML models on **CIC-IDS2017** network intrusion dataset:
-1. **Logistic Regression** - Baseline (93% accuracy)
-2. **Naive Bayes** - Simple classifier (83% accuracy)
-3. **SVM (Nystroem)** - Scalable kernel method (97% accuracy)
-4. **KNN (K=5)** - Nearest neighbors (98.20% accuracy)
-5. **Random Forest** - **DEPLOYED** (97.59% accuracy, best attack detection)
+Huấn luyện 5 mô hình học máy trên tập dữ liệu xâm nhập mạng CIC-IDS2017:
+1. Logistic Regression - Mô hình nền tảng (93%)
+2. Naive Bayes - Phân loại đơn giản (83%)
+3. SVM (Nystroem) - Phương pháp kernel mở rộng (97%)
+4. KNN (K=5) - Láng giềng gần nhất (98.20%)
+5. Random Forest - Được triển khai (97.59%, phát hiện tấn công tốt nhất)
 
-### Why Random Forest?
+### Tại sao chọn Random Forest?
 
-Despite KNN having **0.61% higher accuracy**, Random Forest was chosen for **production** because:
+Dù KNN có độ chính xác cao hơn 0.61%, Random Forest được chọn cho triển khai vì:
 
-| Metric | KNN | Random Forest | Winner |
-|--------|-----|---------------|--------|
-| Overall Accuracy | 98.20% | 97.59% | KNN |
-| **PortScan Recall** | 84.8% | **99.9%** | **RF** ✓ |
-| **Bot Recall** | 62.4% | **92.3%** | **RF** ✓ |
-| DDoS Recall | 98.1% | 98.5% | RF |
+| Chỉ số | KNN | Random Forest | Thắng |
+|--------|:---:|:-------------:|:-----:|
+| Độ chính xác tổng thể | 98.20% | 97.59% | KNN |
+| Recall PortScan | 84.8% | 99.9% | RF |
+| Recall Bot | 62.4% | 92.3% | RF |
+| Recall DDoS | 98.1% | 98.5% | RF |
 
-**Real impact:** RF detects **15% more reconnaissance** and **30% more botnets** → Better security
-
----
-
-## File Structure
-
-### Root Level Files
-
-| File | Purpose |
-|------|---------|
-| **README.md** | Quick project overview |
-| **GUIDE.md** | This file - Complete documentation |
-| **REPORT.md** | Detailed model analysis & deployment decision |
-| **requirements.txt** | Python dependencies |
-| **model_comparison.py** | Compares 5 models, generates charts |
-| **phase6_demo.py** | Real-time prediction demo |
-
-### Team Member Folders
-
-| Folder | Team Member | TV (Task) | What It Does |
-|--------|-------------|----------|--------------|
-| **HoangAnh_N23DCCN071** | Hoàng Anh | TV1 + TV2 | Data preprocessing & feature selection |
-| **N23DCCN001_DangKimAn** | Đặng Kim An | TV3 | Trains 3 models (LR, NB, SVM) |
-| **N23DCCN138_PhamQuocAn** | Phạm Quốc An | TV4 | Trains 2 models (KNN, RF) + deployment |
+Tác động thực tế: RF phát hiện thêm 15% dò quét mạng và 30% botnet so với KNN.
 
 ---
 
-## How to Run
+## Cấu trúc file
 
-### Phase 1: Data Preprocessing (TV1)
+### File ở thư mục gốc
+
+| File | Chức năng |
+|------|----------|
+| README.md | Tổng quan dự án |
+| GUIDE.md | Hướng dẫn đầy đủ (file này) |
+| REPORT.md | Phân tích mô hình chi tiết và quyết định triển khai |
+| requirements.txt | Thư viện Python cần thiết |
+| model_comparison.py | So sánh 5 mô hình, tạo biểu đồ |
+| phase6_demo.py | Demo dự đoán thời gian thực |
+
+### Thư mục thành viên
+
+| Thư mục | Thành viên | Nhiệm vụ | Nội dung |
+|---------|-----------|----------|----------|
+| HoangAnh_N23DCCN071 | Hoàng Anh | TV1 + TV2 | Tiền xử lý dữ liệu và chọn đặc trưng |
+| N23DCCN001_DangKimAn | Đặng Kim An | TV3 | Huấn luyện 3 mô hình (LR, NB, SVM) |
+| N23DCCN138_PhamQuocAn | Phạm Quốc An | TV4 | Huấn luyện 2 mô hình (KNN, RF) + triển khai |
+
+---
+
+## Hướng dẫn chạy
+
+### Giai đoạn 1: Tiền xử lý dữ liệu (TV1)
 ```bash
-# First: Download 8 CSV files from Kaggle and extract to:
+# Trước tiên: Tải 8 file CSV từ Kaggle về:
 mkdir -p HoangAnh_N23DCCN071/data/raw
-# Put these 8 files in HoangAnh_N23DCCN071/data/raw/:
+# Đặt 8 file CSV vào HoangAnh_N23DCCN071/data/raw/:
 # - Monday-WorkingHours.pcap_ISCX.csv
 # - Tuesday-WorkingHours.pcap_ISCX.csv
 # - Wednesday-WorkingHours.pcap_ISCX.csv
@@ -172,513 +156,336 @@ cd HoangAnh_N23DCCN071
 python preprocess.py
 ```
 
-**What it does:**
-- Loads 8 CSV files from `data/raw/` (~2.8M network flows)
-- Cleans column names, removes duplicates/NaN
-- Generates EDA charts (attack distribution, correlation heatmap)
+Chức năng:
+- Tải 8 file CSV từ data/raw/ (khoảng 2.8 triệu luồng mạng)
+- Làm sạch tên cột, xóa trùng lặp/NaN
+- Tạo biểu đồ EDA (phân bố tấn công, tương quan đặc trưng)
 
-**Output:**
+Đầu ra:
 ```
-data/processed/merged_cleaned.csv  (2.8M rows × 79 columns)
+data/processed/merged_cleaned.csv  (2.8 triệu dòng x 79 cột)
 outputs/attack_distribution.png
 outputs/correlation_heatmap.png
 ```
 
-**EDA Visualizations:**
+Biểu đồ kết quả:
 
-#### Attack Distribution
-![Attack Distribution](HoangAnh_N23DCCN071/outputs/attack_distribution.png)
+#### Phân bố tấn công
+![Phân bố tấn công](HoangAnh_N23DCCN071/outputs/attack_distribution.png)
 
-#### Feature Correlation Heatmap
-![Correlation Heatmap](HoangAnh_N23DCCN071/outputs/correlation_heatmap.png)
-
-**Directory structure after this phase:**
-```
-HoangAnh_N23DCCN071/
-├── data/
-│   ├── raw/                        (Input: 8 CSV files)
-│   └── processed/
-│       └── merged_cleaned.csv      (Output: cleaned data)
-├── outputs/
-│   ├── attack_distribution.png
-│   └── correlation_heatmap.png
-├── preprocess.py
-└── prepare_model_data.py
-```
+#### Tương quan đặc trưng
+![Tương quan đặc trưng](HoangAnh_N23DCCN071/outputs/correlation_heatmap.png)
 
 ---
 
-### Phase 2: Feature Selection & Balancing (TV2)
+### Giai đoạn 2: Chọn đặc trưng và cân bằng (TV2)
 ```bash
 python prepare_model_data.py
 ```
 
-**What it does:**
-- Selects **18 core features:** Protocol, Flow Duration, Tot Fwd Pkts, Tot Bwd Pkts, TotLen Fwd Pkts, TotLen Bwd Pkts, Fwd Pkt Len Mean, Bwd Pkt Len Mean, Flow Byts/s, Flow Pkts/s, Pkt Len Mean, Pkt Len Std, SYN Flag Cnt, ACK Flag Cnt, FIN Flag Cnt, RST Flag Cnt, PSH Flag Cnt, URG Flag Cnt
-- Encodes Protocol column (TCP/UDP/ICMP)
-- Applies SMOTE (oversample minorities to 10%)
-- Applies RandomUnderSampler (cap majority at 3× minority)
-- Standardizes features with StandardScaler
-- Splits into train/test (80/20, stratified)
+Chức năng:
+- Chọn 17 đặc trưng chính: Flow Duration, Total Fwd Packets, Total Backward Packets, Total Length of Fwd Packets, Total Length of Bwd Packets, Fwd Packet Length Mean, Bwd Packet Length Mean, Flow Bytes/s, Flow Packets/s, Packet Length Mean, Packet Length Std, SYN Flag Count, ACK Flag Count, FIN Flag Count, RST Flag Count, PSH Flag Count, URG Flag Count
+- Áp dụng SMOTE (tăng mẫu lớp thiểu số lên 10%)
+- Áp dụng RandomUnderSampler (giảm lớp đa số xuống 3 lần lớp thiểu số)
+- Chuẩn hóa bằng StandardScaler
+- Chia train/test theo tỷ lệ 80/20 (stratified)
 
-**Output:**
+Đầu ra:
 ```
-data/final/X_train.csv           (144K rows × 18 columns)
-data/final/X_test.csv            (36K rows × 18 columns)
+data/final/X_train.csv           (144 nghìn dòng x 17 cột)
+data/final/X_test.csv            (36 nghìn dòng x 17 cột)
 data/final/y_train.csv
 data/final/y_test.csv
-artifacts/scaler.pkl             ← Feature scaling
-artifacts/label_encoder.pkl      ← Class encoding
+artifacts/scaler.pkl
+artifacts/label_encoder.pkl
 ```
 
 ---
 
-### Phase 3: Train 3 Models (TV3)
+### Giai đoạn 3: Huấn luyện 3 mô hình (TV3)
 ```bash
 cd ../N23DCCN001_DangKimAn
 jupyter notebook nodebook/logistic_regression.ipynb
 ```
 
-**Option A: Jupyter (Interactive)**
-- Click "Run All" or Ctrl+A then Ctrl+Enter
-- See predictions & confusion matrices in real-time
+Cách A: Jupyter (tương tác)
+- Mở notebook, nhấn "Run All"
+- Xem dự đoán và ma trận nhầm lẫn trực tiếp
 
-**Option B: Kaggle (Recommended)**
-- Create new Kaggle notebook
-- Add dataset: chethuhn/network-intrusion-dataset
-- Copy code from notebook & run
+Cách B: Kaggle (khuyến nghị)
+- Tạo notebook mới trên Kaggle
+- Thêm dataset: chethuhn/network-intrusion-dataset
+- Sao chép code từ notebook rồi chạy
 
-**Models trained:**
-1. Logistic Regression (93% accuracy)
-2. Naive Bayes (83% accuracy)
-3. SVM with Nystroem (97% accuracy)
+Các mô hình được huấn luyện:
+1. Logistic Regression (93%)
+2. Naive Bayes (83%)
+3. SVM với Nystroem (97%)
 
-**Output:**
-```
-N23DCCN001_DangKimAn/data/artifacts/
-├── logistic_regression.png
-├── naive_algorithm.png
-└── svm_v5_confusion_matrix.png
-```
-
-**Confusion Matrices:**
+Ma trận nhầm lẫn:
 
 #### Logistic Regression
-![Logistic Regression CM](N23DCCN001_DangKimAn/data/artifacts/logistic_regression.png)
+![Ma trận nhầm lẫn - Logistic Regression](N23DCCN001_DangKimAn/data/artifacts/logistic_regression.png)
 
 #### Naive Bayes
-![Naive Bayes CM](N23DCCN001_DangKimAn/data/artifacts/naive_algorithm.png)
+![Ma trận nhầm lẫn - Naive Bayes](N23DCCN001_DangKimAn/data/artifacts/naive_algorithm.png)
 
 #### SVM (Nystroem)
-![SVM CM](N23DCCN001_DangKimAn/data/artifacts/svm_v5_confusion_matrix.png)
+![Ma trận nhầm lẫn - SVM](N23DCCN001_DangKimAn/data/artifacts/svm_v5_confusion_matrix.png)
 
 ---
 
-### Phase 4: Train Advanced Models (TV4)
+### Giai đoạn 4: Huấn luyện mô hình nâng cao (TV4)
 ```bash
 cd ../N23DCCN138_PhamQuocAn
 python notebooks/IDS_ML_Notebook.py
 ```
 
-**Or on Kaggle (⭐ Recommended - more RAM):**
-- Create new Kaggle notebook
-- Copy code from `notebooks/IDS_ML_Notebook.py`
-- Run
+Hoặc trên Kaggle (khuyến nghị vì cần nhiều RAM):
+- Tạo notebook mới trên Kaggle
+- Sao chép code từ notebooks/IDS_ML_Notebook.py
+- Chạy
 
-**Models trained:**
-1. KNN (K=5) - 98.20% accuracy
-2. Random Forest (100 trees) - 97.59% accuracy, **best attack detection**
+Các mô hình được huấn luyện:
+1. KNN (K=5) - 98.20% (độ chính xác cao nhất)
+2. Random Forest (100 cây) - 97.59% (phát hiện tấn công tốt nhất)
 
-**Output:**
-```
-artifacts/
-├── knn_model.pkl
-└── random_forest_model.pkl
-logs/alerts.log  ← Sample Suricata-format alerts
-```
+Ma trận nhầm lẫn:
 
-**Confusion Matrices:**
+#### KNN (K=5) - Độ chính xác 98.20%
+![Ma trận nhầm lẫn - KNN](N23DCCN138_PhamQuocAn/outputs/cm_KNN.png)
 
-#### KNN (K=5) - 98.20% Accuracy
-![KNN CM](N23DCCN138_PhamQuocAn/outputs/cm_KNN.png)
-
-#### Random Forest - 97.59% Accuracy (DEPLOYED)
-![Random Forest CM](N23DCCN138_PhamQuocAn/outputs/cm_Random_Forest.png)
+#### Random Forest - Độ chính xác 97.59% (Được triển khai)
+![Ma trận nhầm lẫn - Random Forest](N23DCCN138_PhamQuocAn/outputs/cm_Random_Forest.png)
 
 ---
 
-### Phase 5: Compare All Models
+### Giai đoạn 5: So sánh tất cả mô hình
 ```bash
+cd ../
 python model_comparison.py
 ```
 
-**What it does:**
-- Uses **hardcoded training results** from TV3 & TV4 (not loading models)
-- Generates comparison visualizations
-- Exports metrics to CSV
+Chức năng:
+- Sử dụng kết quả huấn luyện từ TV3 và TV4 (hardcoded)
+- Tạo biểu đồ so sánh
+- Xuất số liệu ra CSV
 
-**Console output:**
-```
-==========================================================================================
-  MODEL COMPARISON — CIC-IDS2017 Network Intrusion Detection
-==========================================================================================
-Model                  Accuracy   Precision  Recall  F1       Note
-------------------------------------------------------------------------------------------
-KNN (K=5)              0.9820     0.9820     0.9820  0.9820   Training: Best accuracy
-Random Forest          0.9759     0.9759     0.9759  0.9759   Training: DEPLOYED
-SVM (Nystroem)         0.9700     N/A        N/A     0.64     Training: Nystroem approximation
-Logistic Regression    0.9300     N/A        N/A     0.71     Training: Baseline
-Naive Bayes            0.8300     N/A        N/A     0.60     Training: Simple classifier
-==========================================================================================
-```
-
-**Output charts:**
+Đầu ra:
 ```
 outputs/comparison/
-├── bar_accuracy.png              ← Model accuracy ranking
-├── bar_all_metrics.png           ← Accuracy vs F1 grouped bars
-├── radar_chart.png               ← Multi-dimensional spider chart
-└── comparison_table.csv          ← Raw metrics
+|-- bar_accuracy.png              -- Xếp hạng độ chính xác
+|-- bar_all_metrics.png           -- So sánh Accuracy và F1
+|-- radar_chart.png               -- Biểu đồ radar đa chiều
+|-- comparison_table.csv          -- Số liệu thô
 ```
 
 ---
 
-### Phase 6: Real-time Prediction Demo
+### Giai đoạn 6: Demo dự đoán thời gian thực
 ```bash
 python phase6_demo.py
 ```
 
-**What it does:**
-- **Loads all 5 trained models** from demo/ folder (or creates demo models if missing)
-- Generates 10 synthetic network flows
-- Makes predictions with each model
-- Shows **consensus prediction** (majority vote)
-- Formats Suricata-style alerts
-
-**Note:** phase6_demo.py requires the 5 models in demo/ folder OR will create quick demo models for testing
+Chức năng:
+- Tải tất cả 5 mô hình đã train từ thư mục demo/ (hoặc tạo mô hình demo nếu thiếu)
+- Tạo 10 luồng mạng giả lập
+- Dự đoán với từng mô hình
+- Hiển thị kết quả biểu quyết đa số
+- Định dạng cảnh báo kiểu Suricata
 
 ---
 
-## Project Files
+## So sánh mô hình
 
-### 18 Core Features (Used Across All Models)
-```
-Protocol, Flow Duration, Tot Fwd Pkts, Tot Bwd Pkts,
-TotLen Fwd Pkts, TotLen Bwd Pkts, Fwd Pkt Len Mean, Bwd Pkt Len Mean,
-Flow Byts/s, Flow Pkts/s, Pkt Len Mean, Pkt Len Std,
-SYN Flag Cnt, ACK Flag Cnt, FIN Flag Cnt, RST Flag Cnt, PSH Flag Cnt, URG Flag Cnt
-```
+### Kết quả chính
 
-### Hyperparameters Used
+Độ chính xác tổng thể: KNN cao nhất (98.20% so với 97.59% của RF)
 
-```
-Train/Test Split: 80/20 (stratified)
-SMOTE: Oversample minorities to 10% of majority
-RandomUnderSampler: Cap majority at 3× minority
-Random Forest: 100 trees
-```
+Nhưng về bảo mật: Random Forest thắng
+- Phát hiện PortScan: RF 99.9% so với KNN 84.8% (hơn 15.1%)
+- Phát hiện Bot: RF 92.3% so với KNN 62.4% (hơn 29.9%)
+- Tác động hàng năm: RF ngăn chặn hơn 52,000 lượt dò quét và 6.5 triệu luồng botnet so với KNN
+
+### Chi tiết từng mô hình
+
+| Mô hình | Độ chính xác | Phù hợp | Khuyến nghị |
+|---------|:------------:|---------|------------|
+| Random Forest | 97.59% | IDS thực tế | Triển khai |
+| KNN | 98.20% | Nghiên cứu | Cân nhắc |
+| SVM | 97.00% | Mở rộng | Thay thế |
+| Logistic Regression | 93.00% | Nền tảng | Chỉ để so sánh |
+| Naive Bayes | 83.00% | Lọc nhanh | Không khuyến nghị |
+
+### Hai cách xem kết quả so sánh
+
+1. Biểu đồ từ kết quả huấn luyện (model_comparison.py)
+   - Dùng số liệu từ TV3 và TV4
+   - Tạo biểu đồ cột và radar
+   - Chạy: `python model_comparison.py`
+
+2. Dự đoán thời gian thực (phase6_demo.py)
+   - Tải mô hình thực từ thư mục demo/
+   - Dự đoán trên luồng mạng giả lập
+   - Hiển thị sự đồng thuận giữa 5 mô hình
+   - Chạy: `python phase6_demo.py`
 
 ---
 
-## How to Use Trained Models
+## Cách sử dụng mô hình đã train
 
-### Load and Predict
+### Tải và dự đoán
 ```python
 import joblib
 
-# ============================================
-# Step 1: Load trained artifacts
-# ============================================
+# Tải các thành phần đã train
 model = joblib.load('demo/random_forest_model.pkl')
-scaler = joblib.load('demo/scaler.pkl')           # StandardScaler (normalize features)
-label_encoder = joblib.load('demo/label_encoder.pkl')  # Text ↔ numeric converter
+scaler = joblib.load('demo/scaler.pkl')
+label_encoder = joblib.load('demo/label_encoder.pkl')
 
-# ============================================
-# Step 2: Prepare features (18 core features)
-# ============================================
-# Protocol, Flow Duration, Tot Fwd Pkts, Tot Bwd Pkts,
-# TotLen Fwd Pkts, TotLen Bwd Pkts, Fwd Pkt Len Mean, Bwd Pkt Len Mean,
-# Flow Byts/s, Flow Pkts/s, Pkt Len Mean, Pkt Len Std,
-# SYN Flag Cnt, ACK Flag Cnt, FIN Flag Cnt, RST Flag Cnt, PSH Flag Cnt, URG Flag Cnt
-flow_features = [6, 120, 25, 30, 1250, 1500, 150, 100, 500, 50, 120, 80, 1, 5, 0, 0, 0, 0]
+# Chuẩn bị đặc trưng (17 đặc trưng)
+flow_features = [120, 25, 30, 1250, 1500, 150, 100, 500, 50, 120, 80, 1, 5, 0, 0, 0, 0]
 
-# ============================================
-# Step 3: Scale features (IMPORTANT!)
-# ============================================
-# Scaler normalizes raw features to ~[-1, 1]
-# Without this, model will give wrong predictions
+# Chuẩn hóa đặc trưng (quan trọng!)
 X_scaled = scaler.transform([flow_features])
 
-# ============================================
-# Step 4: Make prediction
-# ============================================
-prediction = model.predict(X_scaled)[0]  # Returns numeric index (0-5)
+# Dự đoán
+prediction = model.predict(X_scaled)[0]
 
-# ============================================
-# Step 5: Convert numeric prediction to text
-# ============================================
-# 0→"BENIGN", 1→"DDoS", 2→"PortScan", 3→"Bot", 4→"Web Attack", 5→"Infiltration"
+# Chuyển số thành nhãn văn bản
 attack_type = label_encoder.inverse_transform([prediction])[0]
 
-print(f"Detected: {attack_type}")
-```
-
-### Run Phase 6 Demo (No Training Required)
-```bash
-python phase6_demo.py
+print(f"Phát hiện: {attack_type}")
 ```
 
 ---
 
-## Model Comparison Summary
+## Giải thích file .pkl
 
-### Key Findings
+### File .pkl là gì?
 
-**Overall Accuracy:** KNN wins (98.20% vs RF's 97.59%)
+File .pkl là đối tượng Python đã được tuần tự hóa (serialize) bằng joblib/pickle. Chứa mô hình học máy và công cụ tiền xử lý đã được huấn luyện.
 
-**But for Security:** Random Forest wins
-- **PortScan detection:** RF 99.9% vs KNN 84.8% (+15.1%)
-- **Bot detection:** RF 92.3% vs KNN 62.4% (+29.9%)
-- **Annual impact:** RF prevents 52,000+ port scans & 6.5M+ bot flows vs KNN
+### Các file trong thư mục demo/:
 
-### Model Details
-
-| Model | Accuracy | Use Case | Recommendation |
-|-------|----------|----------|-----------------|
-| **Random Forest** | 97.59% | **Production IDS** | ⭐ **DEPLOY** |
-| KNN | 98.20% | Research/Benchmarking | Consider accuracy |
-| SVM | 97.00% | Scalability needed | Good alternative |
-| Logistic Reg | 93.00% | Fast baseline | Baseline only |
-| Naive Bayes | 83.00% | Quick filter | Not recommended |
-
-### Two Ways to View Model Comparison
-
-**1. Training Results Visualization (model_comparison.py)**
-- Uses hardcoded metrics from TV3 & TV4 training
-- Generates bar charts and radar charts
-- Shows theoretical performance on training data
-- Run: `python model_comparison.py`
-
-**2. Real-time Predictions (phase6_demo.py)**
-- Loads actual trained models from demo/ folder
-- Makes predictions on synthetic network flows
-- Shows consensus across all 5 models
-- Demonstrates model agreement/disagreement
-- Run: `python phase6_demo.py`
-
----
-
-## Troubleshooting
-
-| Problem | Solution |
-|---------|----------|
-| `FileNotFoundError: data/raw` | Download 8 CSVs from Kaggle and extract to HoangAnh_N23DCCN071/data/raw/ |
-| `MemoryError` during TV4 | Run TV4 on Kaggle instead (cloud has more RAM) |
-| `ModuleNotFoundError: sklearn` | Run `pip install -r requirements.txt` again |
-| Script runs very slow | Jupyter notebooks on local machine are slow; use Kaggle |
-| Can't open PNG files | Use image viewer or browser: `open outputs/comparison/bar_accuracy.png` |
-| Missing trained models in demo/ | Download from Google Drive and place 7 files in demo/ folder |
-
----
-
-## Expected Runtime
-
-| Phase | Duration | Notes |
-|-------|----------|-------|
-| Setup | 5 min | Install + download dataset |
-| TV1 | 10-15 min | Data cleaning |
-| TV2 | 5-10 min | Feature selection |
-| TV3 | 30-60 min | Train 3 models |
-| TV4 | 60-120 min | Train RF/KNN (RF is slow, 100 trees) |
-| TV5 | <1 min | Generate charts |
-| **Total** | **2-4 hours** | Can run TV3 & TV4 in parallel to save time |
-
----
-
-## Next Steps
-
-1. **Want quick demo?** → `python phase6_demo.py` (shows all 5 models with consensus)
-2. **Want to compare models?** → `python model_comparison.py` (generates charts with training results)
-3. **Want to understand why RF was deployed?** → Read REPORT.md
-4. **Want to run full training pipeline?** → Follow "How to Run" sections (needs Kaggle dataset)
-5. **Want to download pre-trained models?** → Check Google Drive link in Quick Start section
-
----
-
-## Team
-
-| Member | ID | Role | Contribution |
-|--------|----|----|--------------|
-| Hoàng Anh | N23DCCN071 | TV1 + TV2 | Data preprocessing, feature selection, balancing |
-| Đặng Kim An | N23DCCN001 | TV3 | Logistic Regression, Naive Bayes, SVM |
-| Phạm Quốc An | N23DCCN138 | TV4 | KNN, Random Forest, real-time deployment |
-
----
-
-## Understanding .pkl Files (Pickled Models)
-
-### What is a .pkl file?
-`.pkl` files are serialized Python objects (using joblib/pickle). They contain trained machine learning models and preprocessing tools.
-
-### Files in demo/ folder:
-
-**Model Files (5 total):**
+File mô hình (5 file):
 ```
-logistic_regression_model.pkl   ← Trained classifier from TV3
-naive_bayes_model.pkl           ← Trained classifier from TV3
-svm_model.pkl                   ← Trained classifier from TV3
-knn_model.pkl                   ← Trained classifier from TV4
-random_forest_model.pkl         ← Trained classifier from TV4 (DEPLOYED)
+logistic_regression_model.pkl   -- Phân loại từ TV3
+naive_bayes_model.pkl           -- Phân loại từ TV3
+svm_model.pkl                   -- Phân loại từ TV3
+knn_model.pkl                   -- Phân loại từ TV4
+random_forest_model.pkl         -- Phân loại từ TV4 (Được triển khai)
 ```
 
-**Shared Preprocessing Files (2 total):**
+File tiền xử lý dùng chung (2 file):
 ```
-scaler.pkl          ← StandardScaler: Normalizes input features to ~[-1, 1]
-                      (All 5 models share this, trained during TV2)
+scaler.pkl          -- StandardScaler: Chuẩn hóa đặc trưng đầu vào về khoảng [-1, 1]
+                       (Tất cả 5 mô hình dùng chung, tạo từ TV2)
 
-label_encoder.pkl   ← LabelEncoder: Converts between text labels ↔ numeric indices
-                      Text: "BENIGN", "DDoS", "PortScan", "Bot", "Web Attack", "Infiltration"
-                      ↕️
-                      Numbers: 0, 1, 2, 3, 4, 5
-                      (Shared by all 5 models, created during training)
+label_encoder.pkl   -- LabelEncoder: Chuyển đổi nhãn văn bản và số
+                       Văn bản: "BENIGN", "DDoS", "PortScan", "Bot", "Web Attack", "Infiltration"
+                       Số:      0,        1,      2,          3,     4,             5
+                       (Tất cả 5 mô hình dùng chung)
 ```
 
-### How they work together:
+### Luồng hoạt động:
 
 ```
-Raw Input Features [6, 120, 25, 30, ...] (18 values)
-  ↓
+Đặc trưng đầu vào thô [120, 25, 30, ...] (17 giá trị)
+  |
+  v
 scaler.pkl (StandardScaler.transform)
-  ↓
-Normalized Features [-0.5, 1.2, 0.3, ...] (scaled)
-  ↓
-Model.predict(scaled_features)
-  ↓
-Numeric Output [2] (e.g., index 2)
-  ↓
+  |
+  v
+Đặc trưng chuẩn hóa [-0.5, 1.2, 0.3, ...] (đã scale)
+  |
+  v
+Model.predict(đặc trưng đã scale)
+  |
+  v
+Đầu ra dạng số [2] (ví dụ: chỉ số 2)
+  |
+  v
 label_encoder.pkl (inverse_transform)
-  ↓
-Text Result "PortScan" (human-readable)
+  |
+  v
+Kết quả văn bản "PortScan" (con người đọc được)
 ```
 
 ---
 
-## Files in This Project
+## Cấu trúc file đầy đủ
 
 ```
 is_security_group1/
-├── README.md                      ← Quick overview
-├── GUIDE.md                       ← Complete documentation (THIS FILE)
-├── REPORT.md                      ← Model analysis & deployment decision
-├── model_comparison.py            ← Compare 5 models, generate charts
-├── phase6_demo.py                 ← Real-time prediction demo (loads from demo/)
-├── requirements.txt               ← Python dependencies
-│
-├── demo/                          ← Pre-trained models (from Google Drive)
-│   ├── logistic_regression_model.pkl   ← TV3: Logistic Regression classifier
-│   ├── naive_bayes_model.pkl           ← TV3: Naive Bayes classifier
-│   ├── svm_model.pkl                   ← TV3: SVM with Nystroem classifier
-│   ├── knn_model.pkl                   ← TV4: KNN (K=5) classifier
-│   ├── random_forest_model.pkl         ← TV4: Random Forest (100 trees, DEPLOYED)
-│   ├── scaler.pkl                      ← Shared: Feature StandardScaler
-│   └── label_encoder.pkl               ← Shared: Label encoder (BENIGN↔0, DDoS↔1, etc.)
-│
-├── HoangAnh_N23DCCN071/           (TV1: Preprocessing + TV2: Features)
-│   ├── preprocess.py              → Loads 8 CSVs, generates EDA charts
-│   ├── prepare_model_data.py      → Feature selection, balancing, splitting
-│   ├── data/
-│   │   ├── raw/                   (Input: 8 CSV files from Kaggle)
-│   │   ├── processed/             (Output: cleaned data)
-│   │   └── final/                 (Output: train/test splits)
-│   ├── artifacts/                 (scaler.pkl, label_encoder.pkl)
-│   ├── outputs/                   (EDA charts: attack_distribution.png, correlation_heatmap.png)
-│   └── requirements.txt
-│
-├── N23DCCN001_DangKimAn/          (TV3: LR, NB, SVM models)
-│   ├── nodebook/
-│   │   ├── logistic_regression.ipynb
-│   │   ├── naive_bayes.ipynb
-│   │   └── svm.ipynb
-│   ├── data/artifacts/            (confusion matrices: logistic_regression.png, naive_algorithm.png, svm_v5_confusion_matrix.png)
-│   └── README.md
-│
-├── N23DCCN138_PhamQuocAn/         (TV4: KNN, RF models + alerts)
-│   ├── notebooks/
-│   │   └── IDS_ML_Notebook.py     → KNN & RF training
-│   ├── outputs/                   (confusion matrices: cm_KNN.png, cm_Random_Forest.png, model_comparison.png)
-│   └── README.md
-│
-└── outputs/
-    └── comparison/                (TV5 outputs: bar_accuracy.png, bar_all_metrics.png, radar_chart.png)
+|-- README.md                      -- Tổng quan dự án
+|-- GUIDE.md                       -- Hướng dẫn đầy đủ (file này)
+|-- REPORT.md                      -- Phân tích mô hình và quyết định triển khai
+|-- GETTING_STARTED.md             -- Hướng dẫn cho người mới
+|-- model_comparison.py            -- So sánh 5 mô hình, tạo biểu đồ
+|-- phase6_demo.py                 -- Demo dự đoán thời gian thực
+|-- requirements.txt               -- Thư viện Python
+|
+|-- demo/                          -- Mô hình đã train (từ Google Drive)
+|   |-- logistic_regression_model.pkl
+|   |-- naive_bayes_model.pkl
+|   |-- svm_model.pkl
+|   |-- knn_model.pkl
+|   |-- random_forest_model.pkl    -- Được triển khai
+|   |-- scaler.pkl                 -- Bộ chuẩn hóa dùng chung
+|   |-- label_encoder.pkl          -- Bộ mã hóa nhãn dùng chung
+|
+|-- HoangAnh_N23DCCN071/           (TV1: Tiền xử lý + TV2: Chọn đặc trưng)
+|   |-- preprocess.py              -- Tải 8 CSV, tạo biểu đồ EDA
+|   |-- prepare_model_data.py      -- Chọn đặc trưng, cân bằng, chia dữ liệu
+|   |-- data/
+|   |   |-- raw/                   (Đầu vào: 8 file CSV từ Kaggle)
+|   |   |-- processed/             (Đầu ra: dữ liệu đã làm sạch)
+|   |   |-- final/                 (Đầu ra: dữ liệu train/test)
+|   |-- artifacts/                 (scaler.pkl, label_encoder.pkl)
+|   |-- outputs/                   (Biểu đồ EDA)
+|
+|-- N23DCCN001_DangKimAn/          (TV3: LR, NB, SVM)
+|   |-- nodebook/
+|   |   |-- logistic_regression.ipynb
+|   |   |-- naive_bayes.ipynb
+|   |   |-- svm.ipynb
+|   |-- data/artifacts/            (Ma trận nhầm lẫn 3 mô hình)
+|   |-- README.md
+|
+|-- N23DCCN138_PhamQuocAn/         (TV4: KNN, RF + cảnh báo)
+|   |-- notebooks/
+|   |   |-- IDS_ML_Notebook.py     -- Huấn luyện KNN và RF
+|   |-- outputs/                   (Ma trận nhầm lẫn KNN, RF, biểu đồ so sánh)
+|   |-- logs/                      (alerts.log)
+|   |-- README.md
 ```
 
 ---
 
-## Google Drive: Pre-trained Results
+## Google Drive
 
-**All training outputs available at:**
+Tất cả kết quả huấn luyện có tại:
 ```
 https://drive.google.com/drive/folders/11JVbhnkZmTAB5ptHeTcQ9F00Y51MoEam
 ```
 
-**Contents:**
-- ✅ Cleaned data (TV1 output)
-- ✅ Balanced datasets (TV2 output)
-- ✅ Confusion matrices (TV3 + TV4 output)
-- ✅ **Pre-trained Random Forest model** (demo folder)
-- ✅ EDA & model comparison charts
-- ✅ Real-time alert logs
+Nội dung:
+- Dữ liệu đã làm sạch (đầu ra TV1)
+- Tập dữ liệu đã cân bằng (đầu ra TV2)
+- Ma trận nhầm lẫn (đầu ra TV3 + TV4)
+- Mô hình Random Forest đã train (thư mục demo)
+- Biểu đồ EDA và so sánh mô hình
+- File cảnh báo thời gian thực
 
-### Quick Start: Download All 5 Models for Demo
+### Tải nhanh 5 mô hình cho demo
 
-To run `python phase6_demo.py` with all 5 models (or demo versions):
+1. Tải từ Google Drive
+2. Tìm 7 file: 5 file mô hình + scaler.pkl + label_encoder.pkl
+3. Tạo thư mục demo/ và đặt vào đó
+4. Chạy: `python phase6_demo.py`
 
-1. Download from Google Drive: https://drive.google.com/drive/folders/11JVbhnkZmTAB5ptHeTcQ9F00Y51MoEam
-2. Find these files in the Drive:
-   - `logistic_regression_model.pkl`
-   - `naive_bayes_model.pkl`
-   - `svm_model.pkl`
-   - `knn_model.pkl`
-   - `random_forest_model.pkl`
-   - `scaler.pkl`
-   - `label_encoder.pkl`
-3. Create `demo/` folder and place them there:
-   ```bash
-   mkdir -p demo/
-   # Copy all 7 files into demo/ folder
-   ```
-4. Run: `python phase6_demo.py`
-
-**Note:** If files are missing, the script automatically creates demo models for comparison.
-
-### Full Setup: Extract Everything to Their Folders
-
-To get full project with all outputs, charts, and 5 pre-trained models:
-
-1. Download all files from Google Drive
-2. Extract to respective folders:
-   ```
-   HoangAnh_N23DCCN071/data/processed/    ← cleaned data
-   HoangAnh_N23DCCN071/data/final/        ← balanced datasets
-   HoangAnh_N23DCCN071/artifacts/         ← scaler, label_encoder
-   HoangAnh_N23DCCN071/outputs/           ← EDA charts
-   N23DCCN001_DangKimAn/data/artifacts/   ← TV3 confusion matrices
-   N23DCCN138_PhamQuocAn/outputs/         ← TV4 confusion matrices
-   outputs/comparison/                     ← comparison charts
-   demo/                                   ← all 5 model files (7 files)
-      ├── logistic_regression_model.pkl
-      ├── naive_bayes_model.pkl
-      ├── svm_model.pkl
-      ├── knn_model.pkl
-      ├── random_forest_model.pkl
-      ├── scaler.pkl
-      └── label_encoder.pkl
-   ```
-3. Run any of these:
-   ```bash
-   python phase6_demo.py          # All 5 models side-by-side
-   python model_comparison.py     # Compare all 5 models with charts
-   ```
+Nếu thiếu file, script tự động tạo mô hình demo để so sánh.
 
 ---
 
@@ -708,6 +515,42 @@ Sau 3-5 phút truy cập Dashboard tại `https://192.168.100.102:443` (user: `a
 
 ---
 
-**Last Updated:** May 4, 2026  
-**Status:** ✅ Complete & Ready for Deployment  
-**Model Deployed:** Random Forest (97.59% accuracy, 99.9% PortScan detection)
+## Xử lý sự cố
+
+| Vấn đề | Giải pháp |
+|--------|----------|
+| FileNotFoundError: data/raw | Tải 8 file CSV từ Kaggle về HoangAnh_N23DCCN071/data/raw/ |
+| MemoryError khi chạy TV4 | Chạy TV4 trên Kaggle thay vì máy local |
+| ModuleNotFoundError: sklearn | Chạy lại `pip install -r requirements.txt` |
+| Script chạy chậm | Dùng Kaggle notebook thay vì máy local |
+| Thiếu mô hình trong demo/ | Tải từ Google Drive và đặt 7 file vào demo/ |
+
+---
+
+## Thời gian dự kiến
+
+| Giai đoạn | Thời gian | Ghi chú |
+|-----------|----------|---------|
+| Cài đặt | 5 phút | Cài thư viện + tải dataset |
+| TV1 | 10-15 phút | Làm sạch dữ liệu |
+| TV2 | 5-10 phút | Chọn đặc trưng |
+| TV3 | 30-60 phút | Huấn luyện 3 mô hình |
+| TV4 | 60-120 phút | Huấn luyện RF/KNN (RF chậm vì 100 cây) |
+| TV5 | dưới 1 phút | Tạo biểu đồ |
+| Tổng | 2-4 giờ | Có thể chạy TV3 và TV4 song song |
+
+---
+
+## Thành viên
+
+| Thành viên | Mã số | Nhiệm vụ | Đóng góp |
+|-----------|-------|----------|----------|
+| Hoàng Anh | N23DCCN071 | TV1 + TV2 | Tiền xử lý dữ liệu, chọn đặc trưng, cân bằng |
+| Đặng Kim An | N23DCCN001 | TV3 | Logistic Regression, Naive Bayes, SVM |
+| Phạm Quốc An | N23DCCN138 | TV4 | KNN, Random Forest, triển khai thời gian thực |
+
+---
+
+Cập nhật lần cuối: 04/05/2026
+Trạng thái: Hoàn thành
+Mô hình triển khai: Random Forest (độ chính xác 97.59%, phát hiện PortScan 99.9%)
