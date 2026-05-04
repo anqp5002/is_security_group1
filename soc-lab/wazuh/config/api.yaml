@@ -1,0 +1,17 @@
+# Wazuh API configuration
+host: 0.0.0.0
+port: 55000
+
+# Access control
+access:
+  max_login_attempts: 50
+  max_request_per_minute: 300
+  block_time: 300
+
+# Cross-origin resource sharing
+cors:
+  enabled: yes
+  source_route: "*"
+  expose_headers: "*"
+  allow_headers: "*"
+  allow_credentials: yes
